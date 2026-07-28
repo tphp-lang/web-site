@@ -1,0 +1,400 @@
+/* about.css — 关于页特有样式 */
+
+/* ---------- 双栏布局 ---------- */
+.about-layout {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 48px;
+    align-items: start;
+}
+
+.about-main { min-width: 0; }
+
+.about-aside {
+    position: sticky;
+    top: 88px;
+}
+
+@media (max-width: 992px) {
+    .about-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+    .about-aside {
+        position: sticky;
+        top: 64px;
+        z-index: 10;
+        background: var(--white-shallow);
+        margin: -16px 0 8px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--gray-shallow);
+    }
+    .about-aside .aside-title {
+        display: none;
+    }
+    .about-aside .anchor-box {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 4px;
+    }
+    .about-aside .anchor-box .link {
+        white-space: nowrap;
+        padding: 6px 14px;
+        border-radius: var(--border-radius-full);
+        background: var(--white);
+        border: 1px solid var(--gray-shallow);
+        font-size: var(--font-size-sm);
+        flex-shrink: 0;
+    }
+    .about-aside .anchor-box .link.active {
+        background: var(--default);
+        color: var(--white-common);
+        border-color: var(--default);
+    }
+    .about-aside .anchor-box .slider {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .about-aside {
+        margin: -8px -16px 8px;
+        padding: 10px 16px;
+    }
+    .about-aside .anchor-box {
+        gap: 10px;
+    }
+}
+
+/* ---------- 侧边锚点导航 ---------- */
+.about-aside .aside-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--black-shallow);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin: 0 0 14px;
+    padding-left: 8px;
+}
+
+.about-aside .anchor-box {
+    padding-top: 4px;
+}
+
+/* ---------- 段落标题 ---------- */
+.about-section {
+    margin-top: clamp(40px, 6vw, 64px);
+    scroll-margin-top: 80px;
+}
+
+.about-section:first-child {
+    margin-top: 0;
+}
+
+.about-section-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.about-section-head .bny-icon {
+    font-size: 22px;
+    color: var(--default);
+}
+
+.about-section-head h2 {
+    font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+    font-weight: var(--font-weight-semibold);
+    color: var(--black);
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* ---------- 项目定位卡 ---------- */
+.intro-card {
+    padding: 36px 40px;
+}
+
+.intro-card .intro-body {
+    width: 100%;
+}
+
+.intro-card .intro-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--border-radius);
+    background: var(--default-alpha-10);
+    color: var(--default);
+    font-size: 28px;
+    margin-bottom: 18px;
+}
+
+.intro-card .intro-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: var(--font-weight-semibold);
+    color: var(--black);
+    margin: 0 0 8px;
+    line-height: 1.2;
+}
+
+.intro-card .intro-role {
+    font-size: var(--font-size);
+    color: var(--default);
+    font-weight: var(--font-weight-medium);
+    margin: 0 0 16px;
+}
+
+.intro-card .intro-desc {
+    font-size: var(--font-size-16);
+    color: var(--black-shallow);
+    line-height: 1.8;
+    margin: 0 0 20px;
+}
+
+.intro-card .intro-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: var(--font-size-sm);
+    color: var(--black-shallow);
+}
+
+.intro-card .intro-meta .meta-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.intro-card .intro-meta .bny-icon {
+    color: var(--default);
+    font-size: 15px;
+}
+
+@media (max-width: 640px) {
+    .intro-card {
+        padding: 28px 24px;
+    }
+    .intro-card .intro-meta {
+        gap: 12px 20px;
+    }
+}
+
+/* ---------- 折叠面板（设计原则） ---------- */
+.about-collapse .item .title {
+    padding-left: 48px;
+}
+
+.about-collapse .item .content {
+    color: var(--black-shallow);
+    line-height: 1.8;
+}
+
+.about-collapse .item .content p {
+    margin: 0 0 10px;
+}
+
+.about-collapse .item .content p:last-child {
+    margin-bottom: 0;
+}
+
+/* ---------- 时间线（项目路线图） ---------- */
+.about-timeline {
+    padding-left: 4px;
+}
+
+.about-timeline .bny-timeline-item {
+    padding-bottom: 28px;
+}
+
+.about-timeline .bny-timeline-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.about-timeline .bny-timeline-title .bny-tag {
+    margin-left: 0;
+}
+
+/* ---------- 性能亮点卡片 ---------- */
+.perf-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.perf-card {
+    text-align: center;
+    height: 100%;
+}
+
+.perf-card .body {
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.perf-card .perf-icon {
+    font-size: 32px;
+    color: var(--default);
+    margin-bottom: 12px;
+}
+
+.perf-card .perf-title {
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--black);
+    margin: 0 0 8px;
+}
+
+.perf-card .perf-desc {
+    font-size: var(--font-size-sm);
+    color: var(--black-shallow);
+    line-height: 1.6;
+    margin: 0;
+}
+
+@media (max-width: 992px) {
+    .perf-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+    .perf-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- 双栏信息卡（三编译器四平台） ---------- */
+.platform-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.platform-card {
+    height: 100%;
+}
+
+.platform-card .body {
+    padding: 28px 28px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.platform-card .platform-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.platform-card .platform-head .bny-icon {
+    font-size: 24px;
+    color: var(--default);
+}
+
+.platform-card .platform-head h3 {
+    font-size: var(--font-size-20);
+    font-weight: var(--font-weight-semibold);
+    color: var(--black);
+    margin: 0;
+}
+
+.platform-card .platform-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.platform-card .platform-tags .bny-tag {
+    margin-left: 0;
+}
+
+.platform-card .platform-desc {
+    font-size: var(--font-size-sm);
+    color: var(--black-shallow);
+    line-height: 1.7;
+    margin: 0;
+}
+
+@media (max-width: 992px) {
+    .platform-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- 贡献链接矩阵 ---------- */
+.links-matrix {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.link-card {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.link-card .body {
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.link-card .link-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.link-card .link-head .bny-icon {
+    font-size: 24px;
+    color: var(--default);
+}
+
+.link-card .link-title {
+    font-size: var(--font-size-20);
+    font-weight: var(--font-weight-semibold);
+    color: var(--black);
+}
+
+.link-card .link-desc {
+    font-size: var(--font-size-sm);
+    color: var(--black-shallow);
+    line-height: 1.7;
+    margin: 0 0 16px;
+    flex: 1;
+}
+
+.link-card .bny-btn {
+    align-self: flex-start;
+}
+
+@media (max-width: 640px) {
+    .links-matrix { grid-template-columns: 1fr; }
+}
+
+/* ---------- 标签云 ---------- */
+.tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag-cloud .bny-tag {
+    margin-left: 0;
+    font-size: var(--font-size);
+    padding: 6px 14px;
+    height: auto;
+}

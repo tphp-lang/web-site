@@ -1,0 +1,30 @@
+/* ============================================================
+   theme.css — TinyPHP 品牌主题色覆盖
+   将 bunny-ui 默认棕色主色（--default 系列）替换为 TinyPHP 图标红
+   亮/暗双模式均生效，加载顺序需在 bunny.css 之后
+   ============================================================ */
+
+/* ---------- 亮色模式 ---------- */
+html {
+    /* 主色 — TinyPHP 图标红 */
+    --default: #EF564E;
+    --default-middle: #F25850;
+    --default-shallow: #F9A8A3;
+
+    /* 主色半透明（聚焦环 / 遮罩） */
+    --default-alpha-10: rgba(239, 86, 78, 0.10);
+    --default-alpha-20: rgba(239, 86, 78, 0.20);
+    --default-alpha-30: rgba(239, 86, 78, 0.30);
+}
+
+/* ---------- 暗色模式 ---------- */
+html.dark {
+    /* 主色保持红，alpha 用浅色调（与 bunny-ui 暗色策略一致） */
+    --default: #EF564E;
+    --default-middle: #F4675E;
+    --default-shallow: #F9A8A3;
+
+    --default-alpha-10: rgba(249, 168, 163, 0.10);
+    --default-alpha-20: rgba(249, 168, 163, 0.20);
+    --default-alpha-30: rgba(249, 168, 163, 0.30);
+}

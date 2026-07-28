@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文档 · TinyPHP</title>
+    <meta name="keywords" content="TinyPHP 文档,快速开始,语法特性,PHPC,多线程,扩展系统">
+    <meta name="description" content="TinyPHP 官方文档：快速开始、语法特性、C 互操作 PHPC、内置函数、多线程、扩展系统、编译流水线。">
+    <link rel="icon" href="assets/img/TinyPHP.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="assets/img/TinyPHP.png">
+    <script>
+        (function () {
+            var t;
+            try { t = localStorage.getItem('tphp-theme'); } catch (e) {}
+            // auto 或无值 → 跟随系统；light/dark → 固定
+            if (t !== 'light' && t !== 'dark') {
+                t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+            }
+            if (t === 'dark') document.documentElement.classList.add('dark');
+        })();
+    </script>
+    <link rel="stylesheet" href="assets/highlight/styles/atom-one-dark.min.css">
+    <script src="assets/highlight/highlight.min.js"></script>
+    <script src="assets/highlight/languages/javascript.min.js"></script>
+    <script src="assets/highlight/languages/php.min.js"></script>
+    <script src="assets/highlight/languages/css.min.js"></script>
+    <script src="assets/highlight/languages/xml.min.js"></script>
+    <link rel="stylesheet" href="assets/bunny/bunny.css">
+    <link rel="stylesheet" href="assets/css/theme.css?v=5">
+    <script src="assets/bunny/bunny.js"></script>
+    <link rel="stylesheet" href="assets/ext/spa.css">
+    <script src="assets/ext/spa.js"></script>
+    <link rel="stylesheet" href="assets/css/site.css?v=5">
+    <link bny-spa rel="stylesheet" href="assets/css/docs.css?v=5">
+</head>
+<body hx-ext="bny-spa">
+
+<!-- ==================== 共享 Shell 勿散改 ==================== -->
+<header class="site-header">
+    <div hx-ext="bny-nav" color="white">
+        <div class="head">
+            <a class="logo-box" href="index.html">
+                <span class="logo"><img src="assets/img/TinyPHP.png" alt="TinyPHP"></span>
+                <span>TinyPHP</span>
+            </a>
+        </div>
+        <ul class="menu">
+            <li><a class="trigger" href="index.html"><i class="bny-icon icon-home"></i><span>首页</span></a></li>
+            <li><a class="trigger" href="docs.html"><i class="bny-icon icon-book"></i><span>文档</span></a></li>
+            <li><a class="trigger" href="ecosystem.html"><i class="bny-icon icon-rocket"></i><span>生态</span></a></li>
+            <li><a class="trigger" href="about.html"><i class="bny-icon icon-info"></i><span>关于我们</span></a></li>
+            <li><a class="trigger" href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip title="GitHub"><i class="bny-icon icon-github-fill"></i></a></li>
+            <li><a class="trigger" href="javascript:void(0)" id="mode-btn" bny-spa-skip title="主题模式 — 点击切换">
+                <span class="mode-icons">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M19.5 4.5l-1.8 1.8M6.3 17.7l-1.8 1.8"/></svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+                </span>
+            </a></li>
+        </ul>
+    </div>
+</header>
+
+<main bny-view>
+<!-- ==================== 文档页内容 ==================== -->
+
+<!-- 页头 -->
+<section class="page-hero">
+    <div class="site-container">
+        <span class="eyebrow"><i class="bny-icon icon-book"></i> Documentation</span>
+        <h1 class="section-title">文档</h1>
+        <p class="section-subtitle">从快速开始到编译流水线，全面了解 TinyPHP 的语法与能力。</p>
+    </div>
+</section>
+
+<!-- 主体双栏 -->
+<section class="section section--tight">
+    <div class="site-container">
+        <div class="docs-layout">
+            <!-- ========== 左侧主内容 ========== -->
+            <div class="docs-main">
+                <article class="prose">
+
+                    <h2 id="quickstart">快速开始</h2>
+                    <p>TinyPHP 是一个 PHP → C AOT 编译器，用 PHP 8.5 强类型语法编写原生二进制，零运行时依赖，性能提升 300-500 倍。下载源码后即可通过 <code>tphp.php</code> 入口编译 PHP 文件为可执行二进制。</p>
+
+                    <h3>编译单文件</h3>
+<pre><code class="language-bash">php tphp.php test/var/var.php</code></pre>
+
+                    <h3>编译多文件</h3>
+                    <p>多文件按入口顺序合并编译，被依赖文件需显式列出：</p>
+<pre><code class="language-bash">php tphp.php main.php demo.php</code></pre>
+
+                    <h3>编译 C 互操作</h3>
+                    <p>桥接 PHP 与 C 源码时，将 <code>.c</code> 文件直接追加到命令末尾：</p>
+<pre><code class="language-bash">php tphp.php main.php bridge.php lib.c</code></pre>
+
+                    <h3>CLI 选项</h3>
+                    <p>常用命令行选项：</p>
+                    <ul class="cli-options">
+                        <li><span class="bny-tag" color="blue">-o &lt;output&gt;</span> <span>输出文件路径</span></li>
+                        <li><span class="bny-tag" color="blue">-cc &lt;compiler&gt;</span> <span>指定 C 编译器（默认内置 TCC）</span></li>
+                        <li><span class="bny-tag" color="green">-os &lt;target&gt;</span> <span>跨编译目标：windows / linux / macos</span></li>
+                        <li><span class="bny-tag" color="green">-arch &lt;arch&gt;</span> <span>目标架构：x86_64 / aarch64</span></li>
+                        <li><span class="bny-tag" color="yellow">-shared</span> <span>编译为动态库</span></li>
+                        <li><span class="bny-tag" color="red">--debug</span> <span>编译运行并比对 <code>#debug</code> 预期输出</span></li>
+                    </ul>
+
+                    <h3>第一个程序 Hello World</h3>
+                    <p>每个程序需要一个 <code>Main</code> 类与 <code>main()</code> 入口方法：</p>
+<pre><code class="language-php">&lt;?php
+class Main {
+    public function main(): void {
+        echo "hello world\n";
+    }
+}</code></pre>
+
+                    <h3>#debug 测试驱动</h3>
+                    <p>使用 <code>#debug</code> 注释声明预期输出，配合 <code>--debug</code> 自动比对：</p>
+<pre><code class="language-php">&lt;?php
+#debug int(42)
+#debug string(5) "hello"
+
+class Main {
+    public function main(): void {
+        var_dump(42);
+        var_dump("hello");
+    }
+}</code></pre>
+                    <p>运行比对：</p>
+<pre><code class="language-bash">php tphp.php test.php --debug</code></pre>
+
+                    <h2 id="syntax">语法特性</h2>
+                    <p>基于 PHP 8.5 强类型语法，约 80% PHP 兼容性。下列特性均已在 AOT 编译器中实现。</p>
+
+                    <h3>控制流</h3>
+                    <div class="tag-cloud">
+                        <span class="bny-tag" color="blue">if/elseif/else</span>
+                        <span class="bny-tag" color="blue">while</span>
+                        <span class="bny-tag" color="blue">do-while</span>
+                        <span class="bny-tag" color="blue">for</span>
+                        <span class="bny-tag" color="blue">foreach</span>
+                        <span class="bny-tag" color="blue">switch</span>
+                        <span class="bny-tag" color="blue">match</span>
+                        <span class="bny-tag" color="blue">break/continue</span>
+                        <span class="bny-tag" color="blue">goto</span>
+                    </div>
+
+                    <h3>OOP 面向对象</h3>
+                    <div class="tag-cloud">
+                        <span class="bny-tag" color="green">class</span>
+                        <span class="bny-tag" color="green">extends</span>
+                        <span class="bny-tag" color="green">abstract</span>
+                        <span class="bny-tag" color="green">interface</span>
+                        <span class="bny-tag" color="green">implements</span>
+                        <span class="bny-tag" color="green">trait + use</span>
+                        <span class="bny-tag" color="green">enum</span>
+                        <span class="bny-tag" color="green">__construct(public $x)</span>
+                        <span class="bny-tag" color="green">__destruct</span>
+                        <span class="bny-tag" color="green">static / final / readonly</span>
+                        <span class="bny-tag" color="green">instanceof</span>
+                        <span class="bny-tag" color="green">self::</span>
+                        <span class="bny-tag" color="green">$this</span>
+                        <span class="bny-tag" color="green">?-&gt; 空安全</span>
+                    </div>
+
+                    <h3>闭包</h3>
+                    <div class="tag-cloud">
+                        <span class="bny-tag" color="yellow">function() use($x) {}</span>
+                        <span class="bny-tag" color="yellow">fn($x): T =&gt; expr</span>
+                        <span class="bny-tag" color="yellow">多捕获</span>
+                        <span class="bny-tag" color="yellow">嵌套闭包</span>
+                    </div>
+
+                    <h3>异常</h3>
+                    <div class="tag-cloud">
+                        <span class="bny-tag" color="red">try/catch/finally</span>
+                        <span class="bny-tag" color="red">throw</span>
+                        <span class="bny-tag" color="red">error() 抛出</span>
+                        <span class="bny-tag" color="red">Type|Exception 返回类型</span>
+                        <span class="bny-tag" color="red">never</span>
+                    </div>
+
+                    <h3>类型系统</h3>
+                    <div class="tag-cloud">
+                        <span class="bny-tag" color="blue">int float string bool array</span>
+                        <span class="bny-tag" color="blue">array&lt;T&gt; 泛型数组</span>
+                        <span class="bny-tag" color="blue">callable</span>
+                        <span class="bny-tag" color="blue">void</span>
+                        <span class="bny-tag" color="blue">mixed</span>
+                        <span class="bny-tag" color="blue">self</span>
+                        <span class="bny-tag" color="blue">类类型</span>
+                    </div>
+
+                    <h3>运算符</h3>
+                    <div class="tag-cloud">
+                        <span class="bny-tag" color="green">完整 15 级优先级</span>
+                        <span class="bny-tag" color="green">三元 ?:</span>
+                        <span class="bny-tag" color="green">空合并 ??</span>
+                        <span class="bny-tag" color="green">太空船 &lt;=&gt;</span>
+                    </div>
+
+                    <h3>命名空间</h3>
+                    <div class="tag-cloud">
+                        <span class="bny-tag" color="yellow">namespace A\B</span>
+                        <span class="bny-tag" color="yellow">use A\{B,C} 分组导入</span>
+                        <span class="bny-tag" color="yellow">use function / const</span>
+                    </div>
+
+                    <h3>Generator 生成器</h3>
+                    <div class="tag-cloud">
+                        <span class="bny-tag" color="blue">yield</span>
+                        <span class="bny-tag" color="blue">yield $k =&gt; $v</span>
+                        <span class="bny-tag" color="blue">send()</span>
+                        <span class="bny-tag" color="blue">getReturn()</span>
+                    </div>
+
+                    <blockquote class="bny-blockquote">
+                        <strong>不支持：</strong><code>eval()</code>、<code>$$var</code>、<code>include/require</code>、<code>__call/__get/__set</code>。
+                        这些特性在 AOT 物理不可行，详见 README 中的替代方案。
+                    </blockquote>
+
+                    <h2 id="phpc">C 互操作 PHPC</h2>
+                    <p>PHPC 是 TinyPHP 与 C 语言互操作的核心能力。通过编译期指令与类型注解，可直接调用 C 函数、操作 C 指针与结构体。</p>
+
+                    <h3>#include 与 #flag 指令</h3>
+                    <p>支持按平台条件包含头文件与链接标志：</p>
+<pre><code class="language-php">#include "include/demo.h"
+#include Linux "linux_only.h"
+#include Windows &lt;windows.h&gt;
+#flag Linux -lm
+#flag GCC -O2 -DNDEBUG</code></pre>
+
+                    <h3>C 类型注解</h3>
+                    <p>使用 <code>C.T*</code> 表示 C 指针类型，<code>C.&lt;type&gt;</code> 表示 C 标量类型：</p>
+<pre><code class="language-php">function create_origin(): C.Point* {
+    return C-&gt;point_origin();
+}
+function get_point_x(C.Point* $p): C.double {
+    return C-&gt;point_get_x($p);
+}</code></pre>
+
+                    <h3>直接调用 C</h3>
+                    <p>使用 <code>C-&gt;function(args)</code> 调用 C 函数，使用 <code>C-&gt;CONST</code> 读取 C 常量。</p>
+
+                    <h3>数组互操作</h3>
+                    <p>PHP 数组转换为 C 数组的桥接函数：</p>
+                    <ul>
+                        <li><code>phpc_arr_int($arr)</code> — int 数组</li>
+                        <li><code>phpc_arr_dbl($arr)</code> — double 数组</li>
+                        <li><code>phpc_arr_str($arr)</code> — string 数组</li>
+                    </ul>
+
+                    <h3>对象与回调互操作</h3>
+                    <ul>
+                        <li><code>phpc_obj($obj)</code> / <code>phpc_new_obj</code> — 对象互操作</li>
+                        <li><code>phpc_fn_i32($cb)</code> / <code>phpc_env($cb)</code> — 回调互操作</li>
+                    </ul>
+
+                    <blockquote class="bny-blockquote">
+                        <strong>所有权规则：</strong>
+                        <code>phpc_arr_int/dbl</code> 自动注册；<code>phpc_arr_str</code> 需 <code>defer phpc_free_str_arr</code>；
+                        <code>c_str/phpc_obj</code> 借用不可 free；C 库返回的 <code>T*</code> 用 <code>defer C-&gt;free</code> 释放。
+                    </blockquote>
+
+                    <h2 id="builtins">内置函数</h2>
+                    <p>312+ 内置函数，覆盖 PHP 标准库核心子集，全部以 AOT 编译进原生二进制。</p>
+
+                    <h3>函数分类</h3>
+                    <div class="tag-cloud">
+                        <span class="bny-tag" color="blue">数组 array_* / count / sort / push / merge / splice</span>
+                        <span class="bny-tag" color="blue">字符串 strlen / substr / str_replace / sprintf / explode / implode</span>
+                        <span class="bny-tag" color="blue">数学 abs / ceil / floor / round / max / min / pow / sqrt / log / exp / trig</span>
+                        <span class="bny-tag" color="blue">时间 time / date / mktime / strtotime</span>
+                        <span class="bny-tag" color="blue">JSON json_encode / json_decode</span>
+                        <span class="bny-tag" color="blue">哈希 md5 / sha1 / sha256 / hash / hmac / password_hash / password_verify</span>
+                        <span class="bny-tag" color="blue">PCRE 正则 preg_match / preg_replace / preg_split（NFA VM）</span>
+                        <span class="bny-tag" color="blue">iconv 字符集转换</span>
+                        <span class="bny-tag" color="blue">filter_var 过滤器</span>
+                        <span class="bny-tag" color="blue">多线程 Thread / Mutex / CondVar / WaitGroup</span>
+                        <span class="bny-tag" color="blue">zlib gzip 压缩 + 流式 + 增量上下文</span>
+                        <span class="bny-tag" color="blue">zip 归档读写</span>
+                        <span class="bny-tag" color="blue">stream socket stream</span>
+                        <span class="bny-tag" color="blue">CSPRNG random_bytes / random_int</span>
+                        <span class="bny-tag" color="blue">ctype</span>
+                    </div>
+
+                    <p>
+                        <a href="https://github.com/KingBes/TinyPHP/blob/main/FUNCTIONS.md" target="_blank" rel="noopener noreferrer" class="bny-btn" bny-spa-skip><i class="bny-icon icon-link"></i> 查看完整函数列表</a>
+                    </p>
+
+                    <h2 id="threads">多线程</h2>
+                    <p>TinyPHP 内置原生多线程支持，提供 Thread / Mutex / CondVar / WaitGroup 四类原语，可直接编译为 OS 线程。</p>
+
+<pre><code class="language-php">&lt;?php
+class Main {
+    public function main(): void {
+        $t = new Thread(function(): int {
+            return 42;
+        });
+        $t-&gt;start();
+        echo $t-&gt;join();  // 42
+
+        $wg = new WaitGroup();
+        $wg-&gt;add(1);
+        $t2 = new Thread(function() use ($wg): int {
+            $wg-&gt;done();
+            return 0;
+        });
+        $t2-&gt;start();
+        $wg-&gt;wait();
+        $t2-&gt;join();
+
+        $mutex = new Mutex(false);
+        $mutex-&gt;lock();
+        // 临界区
+        $mutex-&gt;unlock();
+    }
+}</code></pre>
+
+                    <h3>线程原语</h3>
+                    <ul>
+                        <li><span class="bny-tag" color="blue">Thread</span> — <code>start / join / detach</code> + 静态 <code>yield / sleep / id</code></li>
+                        <li><span class="bny-tag" color="blue">Mutex</span> — <code>lock / tryLock / unlock</code>，支持 <code>recursive</code> 选项</li>
+                        <li><span class="bny-tag" color="blue">CondVar</span> — <code>wait / signal / broadcast</code></li>
+                        <li><span class="bny-tag" color="blue">WaitGroup</span> — <code>add / done / wait</code></li>
+                    </ul>
+
+                    <blockquote class="bny-blockquote">
+                        <strong>Thread-Local 运行时策略：</strong>每线程独立内存池，无锁竞争，避免 GC STW 全局停顿。
+                    </blockquote>
+
+                    <h2 id="extensions">扩展系统</h2>
+                    <p>通过 <code>#import</code> 指令导入内置扩展，扩展函数直接编译进二进制。</p>
+
+                    <h3>#import 语法</h3>
+<pre><code class="language-php">&lt;?php
+#import pcntl
+
+class Main {
+    public function main(): void {
+        $pid = pcntl_fork();
+    }
+}</code></pre>
+
+                    <h3>内置扩展</h3>
+                    <div class="tag-cloud">
+                        <span class="bny-tag" color="blue">pcntl</span>
+                        <span class="bny-tag" color="blue">posix</span>
+                        <span class="bny-tag" color="blue">openssl</span>
+                        <span class="bny-tag" color="blue">calendar</span>
+                        <span class="bny-tag" color="blue">exif</span>
+                        <span class="bny-tag" color="blue">pcre</span>
+                        <span class="bny-tag" color="blue">pdo</span>
+                        <span class="bny-tag" color="blue">pdo_mysql</span>
+                        <span class="bny-tag" color="blue">sqlite3</span>
+                        <span class="bny-tag" color="blue">stream</span>
+                        <span class="bny-tag" color="blue">fileinfo</span>
+                        <span class="bny-tag" color="blue">filter</span>
+                        <span class="bny-tag" color="blue">hash</span>
+                        <span class="bny-tag" color="blue">iconv</span>
+                    </div>
+
+                    <blockquote class="bny-blockquote">
+                        <strong>安全模型：</strong><code>#import</code> 受扩展名白名单（正则 <code>\w[\w\-]*</code>）+ 工作区边界校验（realpath 后必须在 <code>ext/</code> 目录内）双重约束，杜绝路径穿越。
+                    </blockquote>
+
+                    <h2 id="pipeline">编译流水线</h2>
+                    <p>从 PHP 源码到原生二进制的完整 AOT 流水线：</p>
+
+                    <div class="pipeline-flow">
+                        <span class="bny-tag" color="blue">PHP</span>
+                        <span class="arrow">→</span>
+                        <span class="bny-tag" color="blue">Lexer</span>
+                        <span class="arrow">→</span>
+                        <span class="bny-tag" color="blue">Token[]</span>
+                        <span class="arrow">→</span>
+                        <span class="bny-tag" color="blue">Parser</span>
+                        <span class="arrow">→</span>
+                        <span class="bny-tag" color="blue">AST</span>
+                        <span class="arrow">→</span>
+                        <span class="bny-tag" color="blue">CodeGenerator</span>
+                        <span class="arrow">→</span>
+                        <span class="bny-tag" color="blue">.c</span>
+                        <span class="arrow">→</span>
+                        <span class="bny-tag" color="blue">编译器</span>
+                        <span class="arrow">→</span>
+                        <span class="bny-tag" color="green">二进制</span>
+                    </div>
+
+                    <h3>阶段说明</h3>
+                    <ul>
+                        <li><strong>Lexer</strong> — 逐字符扫描，约 75 种 Token，支持字符串插值 / heredoc</li>
+                        <li><strong>Parser</strong> — 递归下降，运算符优先级完整</li>
+                        <li><strong>CodeGenerator</strong> — 访问者模式，生成类型安全的 C 代码</li>
+                        <li><strong>C 运行时</strong> — COS 风格对象系统（16B 头），setjmp/longjmp 异常，ROPE 字符串拼接，128 槽数组/对象复用池，64KB 字符串池</li>
+                        <li><strong>编译器</strong> — 内置 TCC（mob 分支），支持 GCC / Clang</li>
+                    </ul>
+
+                </article>
+            </div>
+
+            <!-- ========== 右侧锚点导航 ========== -->
+            <aside class="docs-aside">
+                <p class="aside-title">章节导航</p>
+                <div hx-ext="bny-anchor" rail class="anchor-box">
+                    <div class="link" anchor="#quickstart">快速开始</div>
+                    <div class="link" anchor="#syntax">语法特性</div>
+                    <div class="link" anchor="#phpc">C 互操作 PHPC</div>
+                    <div class="link" anchor="#builtins">内置函数</div>
+                    <div class="link" anchor="#threads">多线程</div>
+                    <div class="link" anchor="#extensions">扩展系统</div>
+                    <div class="link" anchor="#pipeline">编译流水线</div>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+</section>
+
+</main>
+
+<!-- ==================== 共享页脚 ==================== -->
+<footer class="site-footer">
+    <div class="site-container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo-line"><img src="assets/img/TinyPHP.png" alt="TinyPHP"><span>TinyPHP</span></div>
+                <p>PHP → C AOT 编译器，用 PHP 语法编写原生二进制，零运行时依赖，性能提升 300-500 倍。</p>
+                <div class="footer-social">
+                    <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip title="GitHub"><i class="bny-icon icon-github-fill"></i></a>
+                    <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer" bny-spa-skip title="CI 构建"><i class="bny-icon icon-carryout"></i></a>
+                    <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" bny-spa-skip title="MIT 许可证"><i class="bny-icon icon-idcard"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col"><h4>导航</h4><a href="index.html">首页</a><a href="docs.html">文档</a><a href="ecosystem.html">生态</a><a href="about.html">关于我们</a></div>
+                <div class="footer-col"><h4>资源</h4><a href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip>GitHub 仓库</a><a href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer" bny-spa-skip>下载 PHAR</a><a href="https://github.com/KingBes/TinyPHP/blob/main/FUNCTIONS.md" target="_blank" rel="noopener noreferrer" bny-spa-skip>函数列表</a><a href="https://github.com/KingBes/TinyPHP/blob/main/BENCHMARK_RESULTS.md" target="_blank" rel="noopener noreferrer" bny-spa-skip>基准测试</a></div>
+                <div class="footer-col"><h4>关联项目</h4><a href="https://github.com/workbunny/bunny.ui" target="_blank" rel="noopener noreferrer" bny-spa-skip>BunnyUI</a><a href="ecosystem.html">扩展库</a><a href="ecosystem.html">工具链</a></div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 TinyPHP · MIT Licensed</span>
+            <span><i class="bny-icon icon-code"></i> 由 BunnyUI 强力驱动</span>
+        </div>
+    </div>
+</footer>
+
+<script src="assets/js/site.js?v=5"></script>
+</body>
+</html>

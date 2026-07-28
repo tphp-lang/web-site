@@ -1,0 +1,159 @@
+/* home.css — 首页特有样式 */
+
+/* ---------- 特性卡片 ---------- */
+.feature-card {
+    height: 100%;
+}
+
+.feature-card .body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--border-radius);
+    background: var(--default-alpha-10);
+    color: var(--default);
+    font-size: 22px;
+    margin-bottom: 14px;
+}
+
+.feature-title {
+    font-size: var(--font-size-16);
+    font-weight: var(--font-weight-semibold);
+    color: var(--black);
+    margin: 0 0 8px;
+    line-height: 1.4;
+}
+
+.feature-desc {
+    font-size: var(--font-size-sm);
+    color: var(--black-shallow);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ---------- 性能数据条 ---------- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 28px 16px;
+    background: var(--white);
+    border: 1px solid var(--gray-shallow);
+    border-radius: var(--radius-020, 12px);
+    transition: var(--transition);
+}
+
+.stat-item:hover {
+    border-color: var(--default-shallow);
+    box-shadow: var(--box-shadow-055);
+    transform: translateY(-2px);
+}
+
+.stat-number {
+    font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+    font-weight: var(--font-weight-semibold);
+    color: var(--default);
+    line-height: 1;
+    margin-bottom: 8px;
+    font-family: var(--font-family-mono, "SFMono-Regular", Consolas, Monaco, monospace);
+}
+
+.stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--black-shallow);
+}
+
+@media (max-width: 992px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+    .stats-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- 代码示例 Tab ---------- */
+.code-tabs .bny-tab .head {
+    margin-bottom: 0;
+}
+
+.code-tabs pre {
+    margin: 0;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+/* bny-blockquote 在代码块下方 */
+.code-tabs .bny-blockquote {
+    margin: 16px 0 0;
+    font-size: var(--font-size-sm);
+}
+
+/* ---------- 内存优化卡片（紧凑型） ---------- */
+.memory-card .body {
+    padding: 20px 22px;
+}
+
+.memory-card .feature-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.memory-card .feature-title {
+    font-size: var(--font-size);
+}
+
+/* ---------- CTA 区块 ---------- */
+.cta-section {
+    text-align: center;
+    padding: clamp(48px, 8vw, 80px) 0;
+}
+
+.cta-card {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(32px, 5vw, 56px);
+    text-align: center;
+    background:
+        radial-gradient(600px 240px at 50% -20%, var(--default-alpha-10), transparent 70%),
+        var(--white);
+    border: 1px solid var(--gray-shallow);
+    border-radius: var(--radius-020, 12px);
+}
+
+.cta-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: var(--font-weight-semibold);
+    color: var(--black);
+    margin: 0 0 12px;
+}
+
+.cta-desc {
+    font-size: var(--font-size-16);
+    color: var(--black-shallow);
+    line-height: 1.7;
+    margin: 0 0 24px;
+}
+
+.cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+@media (max-width: 640px) {
+    .cta-actions .bny-btn { flex: 1; }
+}

@@ -1,0 +1,210 @@
+/* docs.css — 文档页特有样式 */
+
+/* ---------- 双栏布局 ---------- */
+.docs-layout {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 48px;
+    align-items: start;
+}
+
+.docs-main { min-width: 0; }
+
+.docs-aside {
+    position: sticky;
+    top: 88px;
+}
+
+@media (max-width: 992px) {
+    .docs-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+    .docs-aside {
+        position: sticky;
+        top: 64px;  /* 紧贴 sticky header 下方 */
+        z-index: 10;
+        background: var(--white-shallow);
+        margin: -16px 0 8px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--gray-shallow);
+    }
+    .docs-aside .aside-title {
+        display: none;  /* 移动端隐藏标题，节省纵向空间 */
+    }
+    /* bny-anchor 容器横向滚动 */
+    .docs-aside .anchor-box {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 4px;
+    }
+    .docs-aside .anchor-box .link {
+        white-space: nowrap;
+        padding: 6px 14px;
+        border-radius: var(--border-radius-full);
+        background: var(--white);
+        border: 1px solid var(--gray-shallow);
+        font-size: var(--font-size-sm);
+        flex-shrink: 0;
+    }
+    .docs-aside .anchor-box .link.active {
+        background: var(--default);
+        color: var(--white-common);
+        border-color: var(--default);
+    }
+    /* 隐藏 bny-anchor 的 slider 竖条（横向布局不需要） */
+    .docs-aside .anchor-box .slider {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .docs-aside {
+        margin: -8px -16px 8px;
+        padding: 10px 16px;
+    }
+    .docs-aside .anchor-box {
+        gap: 10px;
+    }
+}
+
+/* ---------- 侧边锚点导航 ---------- */
+.docs-aside .aside-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--black-shallow);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin: 0 0 14px;
+    padding-left: 8px;
+}
+
+.docs-aside .anchor-box {
+    padding-top: 4px;
+}
+
+/* ---------- 文档正文 ---------- */
+.docs-main .prose h2 {
+    font-size: clamp(1.5rem, 2.5vw, 1.9rem);
+    font-weight: var(--font-weight-semibold);
+    color: var(--black);
+    margin: 48px 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gray-shallow);
+    scroll-margin-top: 80px;
+}
+
+.docs-main .prose h2:first-child {
+    margin-top: 0;
+}
+
+.docs-main .prose h3 {
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--black);
+    margin: 32px 0 12px;
+    scroll-margin-top: 80px;
+}
+
+.docs-main .prose p {
+    font-size: var(--font-size-16);
+    color: var(--black-shallow);
+    line-height: 1.85;
+    margin: 0 0 16px;
+}
+
+.docs-main .prose ul {
+    font-size: var(--font-size-16);
+    color: var(--black-shallow);
+    line-height: 1.85;
+    padding-left: 22px;
+    margin: 0 0 16px;
+}
+
+.docs-main .prose ul li {
+    margin-bottom: 6px;
+}
+
+.docs-main .prose code:not(.hljs) {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--gray-shallow);
+    color: var(--default);
+    font-size: .9em;
+    font-family: var(--font-family-mono, "SFMono-Regular", Consolas, Monaco, monospace);
+}
+
+.docs-main .prose pre {
+    margin: 0 0 20px;
+}
+
+.docs-main .prose .bny-blockquote {
+    margin: 20px 0;
+    font-size: var(--font-size-sm);
+}
+
+/* ---------- 标签云 ---------- */
+.tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0 16px;
+}
+
+.tag-cloud .bny-tag {
+    margin-left: 0;
+    font-size: var(--font-size-sm);
+}
+
+/* ---------- 流水线图 ---------- */
+.pipeline-flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    background: var(--white);
+    border: 1px solid var(--gray-shallow);
+    border-radius: var(--border-radius);
+    font-family: var(--font-family-mono, "SFMono-Regular", Consolas, Monaco, monospace);
+    font-size: var(--font-size-sm);
+}
+
+.pipeline-flow .arrow {
+    color: var(--black-shallow);
+    font-weight: var(--font-weight-semibold);
+}
+
+.pipeline-flow .bny-tag {
+    margin-left: 0;
+}
+
+/* ---------- CLI 选项列表 ---------- */
+.cli-options {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 16px;
+}
+
+.cli-options li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--gray-shallow);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.cli-options li:last-child {
+    border-bottom: none;
+}
+
+.cli-options .bny-tag {
+    margin-left: 0;
+    flex-shrink: 0;
+    min-width: 140px;
+    font-family: var(--font-family-mono, "SFMono-Regular", Consolas, Monaco, monospace);
+}
