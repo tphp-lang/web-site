@@ -118,18 +118,35 @@
         });
     }
 
+    /* ---------- 文档页左侧菜单高亮（基于 hash 判断当前片段） ---------- */
+    function syncDocsSidebarActive() {
+        var menu = document.querySelector('.docs-menu');
+        if (!menu) return;
+        // 框架页模式下 pathname 始终是 docs.html，从 hash 提取实际片段路径
+        var currentPath = 'docs/quickstart.html';  // 默认
+        if (location.hash && location.hash.length > 1 && location.hash.charAt(1) === '/') {
+            currentPath = location.hash.substring(1).replace(/^\//, '');  // 如 docs/syntax.html
+        }
+        menu.querySelectorAll('a[href]').forEach(function (a) {
+            var href = (a.getAttribute('href') || '').replace(/^\//, '');
+            if (href === currentPath) a.classList.add('active');
+            else a.classList.remove('active');
+        });
+    }
+
     /* ---------- 页面（含 SPA 切换后）初始化 ---------- */
     function onPageReady() {
         syncNavActive();
+        syncDocsSidebarActive();
         initModeBtn();
         initMobileNavAutoCollapse();
         triggerSpaFadeIn();
         highlightCode();
     }
 
-    /* ---------- SPA 切换淡入动画 ---------- */
+    /* ---------- SPA 切换淡入动画（优先子视口） ---------- */
     function triggerSpaFadeIn() {
-        var view = document.querySelector('[bny-view]');
+        var view = document.querySelector('#docs-view') || document.querySelector('[bny-view]');
         if (!view) return;
         view.classList.remove('spa-enter');
         void view.offsetWidth;  // 强制重排，使 animation 重新触发
@@ -143,12 +160,11 @@
         onPageReady();
     }
 
-    // SPA 内容交换完成（[bny-view] 持久，监听器只绑一次）
+    // SPA 内容交换完成（绑在 document 上，视口交换后不丢失）
     function bindSpaLoaded() {
-        var view = document.querySelector('[bny-view]');
-        if (!view || view._tphpSpaBound) return;
-        view._tphpSpaBound = true;
-        view.addEventListener('bny:spa:loaded', onPageReady);
+        if (document._tphpSpaBound) return;
+        document._tphpSpaBound = true;
+        document.addEventListener('bny:spa:loaded', onPageReady);
     }
     bindSpaLoaded();
     // 兜底：若 bny-view 晚于本脚本就绪

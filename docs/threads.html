@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>多线程 · TinyPHP</title>
+    <meta name="keywords" content="TinyPHP 多线程,Thread,Mutex,CondVar,WaitGroup,tinycthread">
+    <meta name="description" content="TinyPHP 内置原生多线程支持，提供 Thread/Mutex/CondVar/WaitGroup 四类原语，可直接编译为 OS 线程。">
+</head>
+<body>
+    <div class="docs-content" bny-view id="docs-view">
+        <div class="docs-main">
+            <article class="prose">
+                    <h2 id="threads">多线程</h2>
+<p>TinyPHP 内置原生多线程支持，提供 Thread / Mutex / CondVar / WaitGroup 四类原语，可直接编译为 OS 线程。</p>
+
+<pre><code class="language-php">&lt;?php
+class Main {
+    public function main(): void {
+        $t = new Thread(function(): int {
+            return 42;
+        });
+        $t-&gt;start();
+        echo $t-&gt;join();  // 42
+
+        $wg = new WaitGroup();
+        $wg-&gt;add(1);
+        $t2 = new Thread(function() use ($wg): int {
+            $wg-&gt;done();
+            return 0;
+        });
+        $t2-&gt;start();
+        $wg-&gt;wait();
+        $t2-&gt;join();
+
+        $mutex = new Mutex(false);
+        $mutex-&gt;lock();
+        // 临界区
+        $mutex-&gt;unlock();
+    }
+}</code></pre>
+
+<h3 id="primitives">线程原语</h3>
+<ul>
+    <li><span class="bny-tag" color="blue">Thread</span> — <code>start / join / detach</code> + 静态 <code>yield / sleep / id</code></li>
+    <li><span class="bny-tag" color="blue">Mutex</span> — <code>lock / tryLock / unlock</code>，支持 <code>recursive</code> 选项</li>
+    <li><span class="bny-tag" color="blue">CondVar</span> — <code>wait / signal / broadcast</code></li>
+    <li><span class="bny-tag" color="blue">WaitGroup</span> — <code>add / done / wait</code></li>
+</ul>
+
+<blockquote class="bny-blockquote">
+    <strong>Thread-Local 运行时策略：</strong>每线程独立内存池，无锁竞争，避免 GC STW 全局停顿。
+</blockquote>
+                </article>
+        </div>
+        <aside class="docs-anchor">
+            <p class="aside-title">本页锚点</p>
+            <div hx-ext="bny-anchor" rail class="anchor-box">
+                    <div class="link" anchor="#primitives">线程原语</div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

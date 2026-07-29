@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>扩展系统 · TinyPHP</title>
+    <meta name="keywords" content="TinyPHP 扩展系统,#import,pcntl,posix,openssl,pcre,pdo,sqlite3">
+    <meta name="description" content="TinyPHP 扩展系统：通过 #import 指令导入内置扩展，扩展函数直接编译进二进制。">
+</head>
+<body>
+    <div class="docs-content" bny-view id="docs-view">
+        <div class="docs-main">
+            <article class="prose">
+                    <h2 id="extensions">扩展系统</h2>
+<p>通过 <code>#import</code> 指令导入内置扩展，扩展函数直接编译进二进制。</p>
+
+<h3 id="import-syntax">#import 语法</h3>
+<pre><code class="language-php">&lt;?php
+#import pcntl
+
+class Main {
+    public function main(): void {
+        $pid = pcntl_fork();
+    }
+}</code></pre>
+
+<h3 id="builtin-exts">内置扩展</h3>
+<div class="tag-cloud">
+    <span class="bny-tag" color="blue">pcntl</span>
+    <span class="bny-tag" color="blue">posix</span>
+    <span class="bny-tag" color="blue">openssl</span>
+    <span class="bny-tag" color="blue">calendar</span>
+    <span class="bny-tag" color="blue">exif</span>
+    <span class="bny-tag" color="blue">pcre</span>
+    <span class="bny-tag" color="blue">pdo</span>
+    <span class="bny-tag" color="blue">pdo_mysql</span>
+    <span class="bny-tag" color="blue">sqlite3</span>
+    <span class="bny-tag" color="blue">stream</span>
+    <span class="bny-tag" color="blue">fileinfo</span>
+    <span class="bny-tag" color="blue">filter</span>
+    <span class="bny-tag" color="blue">hash</span>
+    <span class="bny-tag" color="blue">iconv</span>
+</div>
+
+<blockquote class="bny-blockquote">
+    <strong>安全模型：</strong><code>#import</code> 受扩展名白名单（正则 <code>\w[\w\-]*</code>）+ 工作区边界校验（realpath 后必须在 <code>ext/</code> 目录内）双重约束，杜绝路径穿越。
+</blockquote>
+                </article>
+        </div>
+        <aside class="docs-anchor">
+            <p class="aside-title">本页锚点</p>
+            <div hx-ext="bny-anchor" rail class="anchor-box">
+                    <div class="link" anchor="#import-syntax">#import 语法</div>
+                    <div class="link" anchor="#builtin-exts">内置扩展</div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>语法特性 · TinyPHP</title>
+    <meta name="keywords" content="TinyPHP 语法,控制流,OOP,闭包,异常,类型系统,Generator">
+    <meta name="description" content="TinyPHP 语法特性：控制流、OOP、闭包、异常、类型系统、运算符、命名空间、Generator 生成器。">
+</head>
+<body>
+    <div class="docs-content" bny-view id="docs-view">
+        <div class="docs-main">
+            <article class="prose">
+                    <h2 id="syntax">语法特性</h2>
+<p>基于 PHP 8.5 强类型语法，约 80% PHP 兼容性。下列特性均已在 AOT 编译器中实现。</p>
+
+<h3 id="control-flow">控制流</h3>
+<div class="tag-cloud">
+    <span class="bny-tag" color="blue">if/elseif/else</span>
+    <span class="bny-tag" color="blue">while</span>
+    <span class="bny-tag" color="blue">do-while</span>
+    <span class="bny-tag" color="blue">for</span>
+    <span class="bny-tag" color="blue">foreach</span>
+    <span class="bny-tag" color="blue">switch</span>
+    <span class="bny-tag" color="blue">match</span>
+    <span class="bny-tag" color="blue">break/continue</span>
+    <span class="bny-tag" color="blue">goto</span>
+</div>
+
+<h3 id="oop">OOP 面向对象</h3>
+<div class="tag-cloud">
+    <span class="bny-tag" color="green">class</span>
+    <span class="bny-tag" color="green">extends</span>
+    <span class="bny-tag" color="green">abstract</span>
+    <span class="bny-tag" color="green">interface</span>
+    <span class="bny-tag" color="green">implements</span>
+    <span class="bny-tag" color="green">trait + use</span>
+    <span class="bny-tag" color="green">enum</span>
+    <span class="bny-tag" color="green">__construct(public $x)</span>
+    <span class="bny-tag" color="green">__destruct</span>
+    <span class="bny-tag" color="green">static / final / readonly</span>
+    <span class="bny-tag" color="green">instanceof</span>
+    <span class="bny-tag" color="green">self::</span>
+    <span class="bny-tag" color="green">$this</span>
+    <span class="bny-tag" color="green">?-&gt; 空安全</span>
+</div>
+
+<h3 id="closure">闭包</h3>
+<div class="tag-cloud">
+    <span class="bny-tag" color="yellow">function() use($x) {}</span>
+    <span class="bny-tag" color="yellow">fn($x): T =&gt; expr</span>
+    <span class="bny-tag" color="yellow">多捕获</span>
+    <span class="bny-tag" color="yellow">嵌套闭包</span>
+</div>
+
+<h3 id="exception">异常</h3>
+<div class="tag-cloud">
+    <span class="bny-tag" color="red">try/catch/finally</span>
+    <span class="bny-tag" color="red">throw</span>
+    <span class="bny-tag" color="red">error() 抛出</span>
+    <span class="bny-tag" color="red">Type|Exception 返回类型</span>
+    <span class="bny-tag" color="red">never</span>
+</div>
+
+<h3 id="type-system">类型系统</h3>
+<div class="tag-cloud">
+    <span class="bny-tag" color="blue">int float string bool array</span>
+    <span class="bny-tag" color="blue">array&lt;T&gt; 泛型数组</span>
+    <span class="bny-tag" color="blue">callable</span>
+    <span class="bny-tag" color="blue">void</span>
+    <span class="bny-tag" color="blue">mixed</span>
+    <span class="bny-tag" color="blue">self</span>
+    <span class="bny-tag" color="blue">类类型</span>
+</div>
+
+<h3 id="operator">运算符</h3>
+<div class="tag-cloud">
+    <span class="bny-tag" color="green">完整 15 级优先级</span>
+    <span class="bny-tag" color="green">三元 ?:</span>
+    <span class="bny-tag" color="green">空合并 ??</span>
+    <span class="bny-tag" color="green">太空船 &lt;=&gt;</span>
+</div>
+
+<h3 id="namespace">命名空间</h3>
+<div class="tag-cloud">
+    <span class="bny-tag" color="yellow">namespace A\B</span>
+    <span class="bny-tag" color="yellow">use A\{B,C} 分组导入</span>
+    <span class="bny-tag" color="yellow">use function / const</span>
+</div>
+
+<h3 id="generator">Generator 生成器</h3>
+<div class="tag-cloud">
+    <span class="bny-tag" color="blue">yield</span>
+    <span class="bny-tag" color="blue">yield $k =&gt; $v</span>
+    <span class="bny-tag" color="blue">send()</span>
+    <span class="bny-tag" color="blue">getReturn()</span>
+</div>
+
+<blockquote class="bny-blockquote">
+    <strong>不支持：</strong><code>eval()</code>、<code>$$var</code>、<code>include/require</code>、<code>__call/__get/__set</code>。
+    这些特性在 AOT 物理不可行，详见 README 中的替代方案。
+</blockquote>
+                </article>
+        </div>
+        <aside class="docs-anchor">
+            <p class="aside-title">本页锚点</p>
+            <div hx-ext="bny-anchor" rail class="anchor-box">
+                    <div class="link" anchor="#control-flow">控制流</div>
+                    <div class="link" anchor="#oop">OOP</div>
+                    <div class="link" anchor="#closure">闭包</div>
+                    <div class="link" anchor="#exception">异常</div>
+                    <div class="link" anchor="#type-system">类型系统</div>
+                    <div class="link" anchor="#operator">运算符</div>
+                    <div class="link" anchor="#namespace">命名空间</div>
+                    <div class="link" anchor="#generator">Generator</div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

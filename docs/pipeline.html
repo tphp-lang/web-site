@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>编译流水线 · TinyPHP</title>
+    <meta name="keywords" content="TinyPHP 编译流水线,Lexer,Parser,AST,CodeGenerator,C 运行时">
+    <meta name="description" content="TinyPHP 编译流水线：从 PHP 源码到原生二进制的完整 AOT 流程。">
+</head>
+<body>
+    <div class="docs-content" bny-view id="docs-view">
+        <div class="docs-main">
+            <article class="prose">
+                    <h2 id="pipeline">编译流水线</h2>
+<p>从 PHP 源码到原生二进制的完整 AOT 流水线：</p>
+
+<div class="pipeline-flow">
+    <span class="bny-tag" color="blue">PHP</span>
+    <span class="arrow">→</span>
+    <span class="bny-tag" color="blue">Lexer</span>
+    <span class="arrow">→</span>
+    <span class="bny-tag" color="blue">Token[]</span>
+    <span class="arrow">→</span>
+    <span class="bny-tag" color="blue">Parser</span>
+    <span class="arrow">→</span>
+    <span class="bny-tag" color="blue">AST</span>
+    <span class="arrow">→</span>
+    <span class="bny-tag" color="blue">CodeGenerator</span>
+    <span class="arrow">→</span>
+    <span class="bny-tag" color="blue">.c</span>
+    <span class="arrow">→</span>
+    <span class="bny-tag" color="blue">编译器</span>
+    <span class="arrow">→</span>
+    <span class="bny-tag" color="green">二进制</span>
+</div>
+
+<h3 id="stages">阶段说明</h3>
+<ul>
+    <li><strong>Lexer</strong> — 逐字符扫描，约 75 种 Token，支持字符串插值 / heredoc</li>
+    <li><strong>Parser</strong> — 递归下降，运算符优先级完整</li>
+    <li><strong>CodeGenerator</strong> — 访问者模式，生成类型安全的 C 代码</li>
+    <li><strong>C 运行时</strong> — COS 风格对象系统（16B 头），setjmp/longjmp 异常，ROPE 字符串拼接，128 槽数组/对象复用池，64KB 字符串池</li>
+    <li><strong>编译器</strong> — 内置 TCC（mob 分支），支持 GCC / Clang</li>
+</ul>
+                </article>
+        </div>
+        <aside class="docs-anchor">
+            <p class="aside-title">本页锚点</p>
+            <div hx-ext="bny-anchor" rail class="anchor-box">
+                    <div class="link" anchor="#stages">阶段说明</div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>
