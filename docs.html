@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,7 @@
     <script>
         (function () {
             var t;
-            try { t = localStorage.getItem('tphp-theme'); } catch (e) {}
+            try { t = localStorage.getItem('tphp-theme'); } catch (e) { }
             if (t !== 'light' && t !== 'dark') {
                 t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
             }
@@ -34,98 +35,133 @@
     <link rel="stylesheet" href="assets/css/site.css?v=6">
     <link rel="stylesheet" href="assets/css/docs.css?v=7">
 </head>
+
 <body hx-ext="bny-spa">
 
-<!-- ==================== 共享 Shell 勿散改 ==================== -->
-<header class="site-header">
-    <div hx-ext="bny-nav" color="white">
-        <div class="head">
-            <a class="logo-box" href="index.html">
-                <span class="logo"><img src="assets/img/TinyPHP.png" alt="TinyPHP"></span>
-                <span>TinyPHP</span>
-            </a>
-        </div>
-        <ul class="menu">
-            <li><a class="trigger" href="index.html"><i class="bny-icon icon-home"></i><span>首页</span></a></li>
-            <li><a class="trigger" href="docs.html"><i class="bny-icon icon-book"></i><span>文档</span></a></li>
-            <li><a class="trigger" href="ecosystem.html"><i class="bny-icon icon-rocket"></i><span>生态</span></a></li>
-            <li><a class="trigger" href="about.html"><i class="bny-icon icon-info"></i><span>关于我们</span></a></li>
-            <li><a class="trigger" href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip title="GitHub"><i class="bny-icon icon-github-fill"></i></a></li>
-            <li><a class="trigger" href="javascript:void(0)" id="mode-btn" bny-spa-skip title="主题模式 — 点击切换">
-                <span class="mode-icons">
-                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M19.5 4.5l-1.8 1.8M6.3 17.7l-1.8 1.8"/></svg>
-                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
-                </span>
-            </a></li>
-        </ul>
-    </div>
-</header>
-
-<main bny-view>
-<!-- ==================== 文档页内容 ==================== -->
-
-<!-- 页头 -->
-<section class="page-hero">
-    <div class="site-container">
-        <span class="eyebrow"><i class="bny-icon icon-book"></i> Documentation</span>
-        <h1 class="section-title">文档</h1>
-        <p class="section-subtitle">从快速开始到编译流水线，全面了解 TinyPHP 的语法与能力。</p>
-    </div>
-</section>
-
-<!-- 主体三栏 -->
-<section class="section section--tight">
-    <div class="site-container">
-        <div class="docs-layout">
-            <!-- ========== 左侧菜单（固定，不参与子视口交换） ========== -->
-            <aside class="docs-sidebar">
-                <p class="aside-title">章节导航</p>
-                <nav class="docs-menu">
-                    <a href="docs/quickstart.html" bny-view-target="#docs-view" class="active">快速开始</a>
-                    <a href="docs/syntax.html" bny-view-target="#docs-view">语法特性</a>
-                    <a href="docs/phpc.html" bny-view-target="#docs-view">C 互操作 PHPC</a>
-                    <a href="docs/builtins.html" bny-view-target="#docs-view">内置函数</a>
-                    <a href="docs/threads.html" bny-view-target="#docs-view">多线程</a>
-                    <a href="docs/extensions.html" bny-view-target="#docs-view">扩展系统</a>
-                    <a href="docs/pipeline.html" bny-view-target="#docs-view">编译流水线</a>
-                </nav>
-            </aside>
-
-            <!-- ========== 子视口：中间内容 + 右侧锚点（仅此区域交换） ========== -->
-            <div class="docs-content" bny-view id="docs-view" hx-get="docs/quickstart.html" hx-trigger="load">
+    <!-- ==================== 共享 Shell 勿散改 ==================== -->
+    <header class="site-header">
+        <div hx-ext="bny-nav" color="white">
+            <div class="head">
+                <a class="logo-box" href="index.html">
+                    <span class="logo"><img src="assets/img/TinyPHP.png" alt="TinyPHP"></span>
+                    <span>TinyPHP</span>
+                </a>
             </div>
+            <ul class="menu">
+                <li><a class="trigger" href="index.html"><i class="bny-icon icon-home"></i><span>首页</span></a></li>
+                <li><a class="trigger" href="docs.html"><i class="bny-icon icon-book"></i><span>文档</span></a></li>
+                <li><a class="trigger" href="ecosystem.html"><i class="bny-icon icon-rocket"></i><span>生态</span></a>
+                </li>
+                <li><a class="trigger" href="about.html"><i class="bny-icon icon-info"></i><span>关于我们</span></a></li>
+                <li><a class="trigger" href="https://github.com/KingBes/TinyPHP" target="_blank"
+                        rel="noopener noreferrer" bny-spa-skip title="GitHub"><i
+                            class="bny-icon icon-github-fill"></i></a></li>
+                <li><a class="trigger" href="javascript:void(0)" id="mode-btn" bny-spa-skip title="主题模式 — 点击切换">
+                        <span class="mode-icons">
+                            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="4.5" />
+                                <path
+                                    d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M19.5 4.5l-1.8 1.8M6.3 17.7l-1.8 1.8" />
+                            </svg>
+                            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" />
+                            </svg>
+                        </span>
+                    </a></li>
+            </ul>
         </div>
-    </div>
-</section>
+    </header>
 
-</main>
+    <main bny-view>
+        <!-- ==================== 文档页内容 ==================== -->
 
-<!-- ==================== 共享页脚 ==================== -->
-<footer class="site-footer">
-    <div class="site-container">
-        <div class="footer-grid">
-            <div class="footer-brand">
-                <div class="logo-line"><img src="assets/img/TinyPHP.png" alt="TinyPHP"><span>TinyPHP</span></div>
-                <p>PHP → C AOT 编译器，用 PHP 语法编写原生二进制，零运行时依赖，性能提升 300-500 倍。</p>
-                <div class="footer-social">
-                    <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip title="GitHub"><i class="bny-icon icon-github-fill"></i></a>
-                    <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer" bny-spa-skip title="CI 构建"><i class="bny-icon icon-carryout"></i></a>
-                    <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" bny-spa-skip title="MIT 许可证"><i class="bny-icon icon-idcard"></i></a>
+        <!-- 页头 -->
+        <section class="page-hero">
+            <div class="site-container">
+                <span class="eyebrow"><i class="bny-icon icon-book"></i> Documentation</span>
+                <h1 class="section-title">文档</h1>
+                <p class="section-subtitle">从快速开始到编译流水线，全面了解 TinyPHP 的语法与能力。</p>
+            </div>
+        </section>
+
+        <!-- 主体三栏 -->
+        <section class="section section--tight">
+            <div class="site-container">
+                <div class="docs-layout">
+                    <!-- ========== 左侧菜单（固定，不参与子视口交换） ========== -->
+                    <aside class="docs-sidebar">
+                        <p class="aside-title">章节导航</p>
+                        <nav class="docs-menu">
+                            <a href="docs/quickstart.html" bny-view-target="#docs-view" class="active">快速开始</a>
+                            <a href="docs/syntax.html" bny-view-target="#docs-view">语法特性</a>
+                            <a href="docs/phpc.html" bny-view-target="#docs-view">C 互操作 PHPC</a>
+                            <a href="docs/builtins.html" bny-view-target="#docs-view">内置函数</a>
+                            <a href="docs/threads.html" bny-view-target="#docs-view">多线程</a>
+                            <a href="docs/extensions.html" bny-view-target="#docs-view">扩展系统</a>
+                            <a href="docs/pipeline.html" bny-view-target="#docs-view">编译流水线</a>
+                        </nav>
+                    </aside>
+
+                    <!-- ========== 子视口：中间内容 + 右侧锚点（仅此区域交换） ========== -->
+                    <div class="docs-content" bny-view id="docs-view" hx-get="docs/quickstart.html" hx-trigger="load">
+                    </div>
                 </div>
             </div>
-            <div class="footer-links">
-                <div class="footer-col"><h4>导航</h4><a href="index.html">首页</a><a href="docs.html">文档</a><a href="ecosystem.html">生态</a><a href="about.html">关于我们</a></div>
-                <div class="footer-col"><h4>资源</h4><a href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip>GitHub 仓库</a><a href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer" bny-spa-skip>下载 PHAR</a><a href="https://github.com/KingBes/TinyPHP/blob/main/FUNCTIONS.md" target="_blank" rel="noopener noreferrer" bny-spa-skip>函数列表</a><a href="https://github.com/KingBes/TinyPHP/blob/main/BENCHMARK_RESULTS.md" target="_blank" rel="noopener noreferrer" bny-spa-skip>基准测试</a></div>
-                <div class="footer-col"><h4>关联项目</h4><a href="https://github.com/workbunny/bunny.ui" target="_blank" rel="noopener noreferrer" bny-spa-skip>BunnyUI</a><a href="ecosystem.html">扩展库</a><a href="ecosystem.html">工具链</a></div>
+        </section>
+
+    </main>
+
+    <!-- ==================== 共享页脚 ==================== -->
+    <footer class="site-footer">
+        <div class="site-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo-line"><img src="assets/img/TinyPHP.png" alt="TinyPHP"><span>TinyPHP</span></div>
+                    <p>PHP → C AOT 编译器，用 PHP 语法编写原生二进制，零运行时依赖，性能提升 300-500 倍。</p>
+                    <div class="footer-social">
+                        <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP"
+                            target="_blank" rel="noopener noreferrer" bny-spa-skip title="GitHub"><i
+                                class="bny-icon icon-github-fill"></i></a>
+                        <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP/actions"
+                            target="_blank" rel="noopener noreferrer" bny-spa-skip title="CI 构建"><i
+                                class="bny-icon icon-carryout"></i></a>
+                        <a class="bny-btn" model="border circle"
+                            href="https://github.com/KingBes/TinyPHP/blob/main/LICENSE" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip title="MIT 许可证"><i
+                                class="bny-icon icon-idcard"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-col">
+                        <h4>导航</h4><a href="index.html">首页</a><a href="docs.html">文档</a><a
+                            href="ecosystem.html">生态</a><a href="about.html">关于我们</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>资源</h4><a href="https://github.com/KingBes/TinyPHP" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip>GitHub 仓库</a><a
+                            href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer"
+                            bny-spa-skip>下载 PHAR</a><a href="https://github.com/KingBes/TinyPHP/blob/main/FUNCTIONS.md"
+                            target="_blank" rel="noopener noreferrer" bny-spa-skip>函数列表</a><a
+                            href="https://github.com/KingBes/TinyPHP/blob/main/BENCHMARK_RESULTS.md" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip>基准测试</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>关联项目</h4><a href="https://github.com/workbunny/bunny.ui" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip>BunnyUI</a><a href="ecosystem.html">扩展库</a><a
+                            href="ecosystem.html">工具链</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 TinyPHP · MIT Licensed</span>
+                <span><i class="bny-icon icon-code"></i> 由 BunnyUI 强力驱动</span>
             </div>
         </div>
-        <div class="footer-bottom">
-            <span>© 2026 TinyPHP · MIT Licensed</span>
-            <span><i class="bny-icon icon-code"></i> 由 BunnyUI 强力驱动</span>
-        </div>
-    </div>
-</footer>
+    </footer>
 
-<script src="assets/js/site.js?v=10"></script>
+    <script src="assets/js/site.js?v=10"></script>
 </body>
+
 </html>
