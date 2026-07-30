@@ -6,8 +6,8 @@
     <title>文档 · TinyPHP</title>
     <meta name="keywords" content="TinyPHP 文档,快速开始,语法特性,PHPC,多线程,扩展系统">
     <meta name="description" content="TinyPHP 官方文档：快速开始、语法特性、C 互操作 PHPC、内置函数、多线程、扩展系统、编译流水线。">
-    <!-- 框架页 URL 保持：导航后地址栏为 docs.html#/docs/xxx.html，刷新不丢失框架 -->
-    <meta name="bny-spa-base" content="docs.html">
+    <!-- hash 路由：导航后地址栏为 docs.html#/docs/xxx.html，刷新不丢失框架 -->
+    <meta name="bny-spa-mode" content="hash">
     <link rel="icon" href="assets/img/TinyPHP.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="assets/img/TinyPHP.png">
     <script>
@@ -30,9 +30,9 @@
     <link rel="stylesheet" href="assets/css/theme.css?v=5">
     <script src="assets/bunny/bunny.js"></script>
     <link rel="stylesheet" href="assets/ext/spa.css">
-    <script src="assets/ext/spa.js"></script>
+    <script src="assets/ext/spa.js?v=2"></script>
     <link rel="stylesheet" href="assets/css/site.css?v=6">
-    <link rel="stylesheet" href="assets/css/docs.css?v=6">
+    <link rel="stylesheet" href="assets/css/docs.css?v=7">
 </head>
 <body hx-ext="bny-spa">
 
@@ -92,94 +92,7 @@
             </aside>
 
             <!-- ========== 子视口：中间内容 + 右侧锚点（仅此区域交换） ========== -->
-            <div class="docs-content" bny-view id="docs-view">
-                <!-- 中间内容 -->
-                <div class="docs-main">
-                    <article class="prose">
-                        <h2 id="quickstart">快速开始</h2>
-                        <p>TinyPHP 是一个 PHP → C AOT 编译器，用 PHP 8.5 强类型语法编写原生二进制，零运行时依赖，性能提升 300-500 倍。下载源码后即可通过 <code>tphp.php</code> 入口编译 PHP 文件为可执行二进制。</p>
-
-                        <h3 id="compile-single">编译单文件</h3>
-<pre><code class="language-bash">php tphp.php test/var/var.php</code></pre>
-
-                        <h3 id="compile-multi">编译多文件</h3>
-                        <p>多文件按入口顺序合并编译，被依赖文件需显式列出：</p>
-<pre><code class="language-bash">php tphp.php main.php demo.php</code></pre>
-
-                        <h3 id="compile-phpc">编译 C 互操作</h3>
-                        <p>桥接 PHP 与 C 源码时，将 <code>.c</code> 文件直接追加到命令末尾：</p>
-<pre><code class="language-bash">php tphp.php main.php bridge.php lib.c</code></pre>
-
-                        <h3 id="cli-options">CLI 选项</h3>
-                        <p>常用命令行选项：</p>
-                        <ul class="cli-options">
-                            <li><span class="bny-tag" color="blue">-o &lt;output&gt;</span> <span>输出文件路径</span></li>
-                            <li><span class="bny-tag" color="blue">-cc &lt;compiler&gt;</span> <span>指定 C 编译器（默认内置 TCC）</span></li>
-                            <li><span class="bny-tag" color="green">-os &lt;target&gt;</span> <span>跨编译目标：windows / linux / macos</span></li>
-                            <li><span class="bny-tag" color="green">-arch &lt;arch&gt;</span> <span>目标架构：x86_64 / aarch64</span></li>
-                            <li><span class="bny-tag" color="yellow">-shared</span> <span>编译为动态库</span></li>
-                            <li><span class="bny-tag" color="red">--debug</span> <span>编译运行并比对 <code>#debug</code> 预期输出</span></li>
-                        </ul>
-
-                        <h3 id="hello-world">第一个程序 Hello World</h3>
-                        <p>每个程序需要一个 <code>Main</code> 类与 <code>main()</code> 入口方法：</p>
-<pre><code class="language-php">&lt;?php
-class Main {
-    public function main(): void {
-        echo "hello world\n";
-    }
-}</code></pre>
-
-                        <h3 id="debug-test">#debug 测试驱动</h3>
-                        <p>使用 <code>#debug</code> 注释声明预期输出，配合 <code>--debug</code> 自动比对：</p>
-<pre><code class="language-php">&lt;?php
-#debug int(42)
-#debug string(5) "hello"
-
-class Main {
-    public function main(): void {
-        var_dump(42);
-        var_dump("hello");
-    }
-}</code></pre>
-                        <p>运行比对：</p>
-<pre><code class="language-bash">php tphp.php test.php --debug</code></pre>
-                    </article>
-                </div>
-
-                <!-- 右侧锚点 -->
-                <aside class="docs-anchor">
-                    <p class="aside-title">本页锚点</p>
-                    <div hx-ext="bny-anchor" rail class="anchor-box">
-                        <div class="link" anchor="#compile-single">编译单文件</div>
-                        <div class="link" anchor="#compile-multi">编译多文件</div>
-                        <div class="link" anchor="#compile-phpc">编译 C 互操作</div>
-                        <div class="link" anchor="#cli-options">CLI 选项</div>
-                        <div class="link" anchor="#hello-world">Hello World</div>
-                        <div class="link" anchor="#debug-test">#debug 测试</div>
-                    </div>
-                </aside>
-
-                <!-- 自动导航：刷新时读取 hash 触发 SPA 导航到对应片段 -->
-                <a href="docs/quickstart.html" id="docs-auto-nav" bny-view-target="#docs-view" style="display:none"></a>
-                <script>
-                    (function () {
-                        function triggerAutoNav() {
-                            var autoNav = document.getElementById('docs-auto-nav');
-                            if (!autoNav) return;
-                            // 无 hash 路径时不导航，使用框架页默认 quickstart 内容
-                            if (!location.hash || location.hash.length <= 1) return;
-                            if (location.hash.charAt(1) !== '/') return;
-                            autoNav.href = location.hash.substring(1);
-                            autoNav.click();
-                        }
-                        if (typeof bny !== 'undefined' && bny.spaReady) {
-                            bny.spaReady(triggerAutoNav);
-                        } else {
-                            window.addEventListener('DOMContentLoaded', triggerAutoNav);
-                        }
-                    })();
-                </script>
+            <div class="docs-content" bny-view id="docs-view" >
             </div>
         </div>
     </div>
@@ -213,6 +126,6 @@ class Main {
     </div>
 </footer>
 
-<script src="assets/js/site.js?v=6"></script>
+<script src="assets/js/site.js?v=10"></script>
 </body>
 </html>

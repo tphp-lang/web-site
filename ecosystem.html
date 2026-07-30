@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>生态 · TinyPHP</title>
     <meta name="keywords" content="TinyPHP 生态,扩展库,工具链,BunnyUI,开源项目">
     <meta name="description" content="TinyPHP 生态：扩展库、工具链与关联项目。">
+    <!-- hash 路由：地址栏使用 入口页#/目标路径，刷新不丢失状态 -->
+    <meta name="bny-spa-mode" content="hash">
     <link rel="icon" href="assets/img/TinyPHP.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="assets/img/TinyPHP.png">
     <script>
         (function () {
             var t;
-            try { t = localStorage.getItem('tphp-theme'); } catch (e) {}
+            try { t = localStorage.getItem('tphp-theme'); } catch (e) { }
             // auto 或无值 → 跟随系统；light/dark → 固定
             if (t !== 'light' && t !== 'dark') {
                 t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
@@ -29,356 +32,190 @@
     <link rel="stylesheet" href="assets/css/theme.css?v=5">
     <script src="assets/bunny/bunny.js"></script>
     <link rel="stylesheet" href="assets/ext/spa.css">
-    <script src="assets/ext/spa.js"></script>
+    <script src="assets/ext/spa.js?v=2"></script>
     <link rel="stylesheet" href="assets/css/site.css?v=6">
     <link rel="stylesheet" href="assets/css/docs.css?v=6">
     <link bny-spa rel="stylesheet" href="assets/css/ecosystem.css?v=5">
 </head>
+
 <body hx-ext="bny-spa">
 
-<!-- ==================== 共享 Shell 勿散改 ==================== -->
-<header class="site-header">
-    <div hx-ext="bny-nav" color="white">
-        <div class="head">
-            <a class="logo-box" href="index.html">
-                <span class="logo"><img src="assets/img/TinyPHP.png" alt="TinyPHP"></span>
-                <span>TinyPHP</span>
-            </a>
-        </div>
-        <ul class="menu">
-            <li><a class="trigger" href="index.html"><i class="bny-icon icon-home"></i><span>首页</span></a></li>
-            <li><a class="trigger" href="docs.html"><i class="bny-icon icon-book"></i><span>文档</span></a></li>
-            <li><a class="trigger" href="ecosystem.html"><i class="bny-icon icon-rocket"></i><span>生态</span></a></li>
-            <li><a class="trigger" href="about.html"><i class="bny-icon icon-info"></i><span>关于我们</span></a></li>
-            <li><a class="trigger" href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip title="GitHub"><i class="bny-icon icon-github-fill"></i></a></li>
-            <li><a class="trigger" href="javascript:void(0)" id="mode-btn" bny-spa-skip title="主题模式 — 点击切换">
-                <span class="mode-icons">
-                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M19.5 4.5l-1.8 1.8M6.3 17.7l-1.8 1.8"/></svg>
-                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
-                </span>
-            </a></li>
-        </ul>
-    </div>
-</header>
-
-<main bny-view>
-<!-- ==================== 生态页内容 ==================== -->
-
-<!-- 页头 -->
-<section class="page-hero">
-    <div class="site-container">
-        <span class="eyebrow"><i class="bny-icon icon-rocket"></i> Ecosystem</span>
-        <h1 class="section-title">生态</h1>
-        <p class="section-subtitle">TinyPHP 的扩展库、工具链与关联项目。</p>
-    </div>
-</section>
-
-<!-- 主体 -->
-<section class="section section--tight">
-    <div class="site-container">
-
-        <div hx-ext="bny-tab" index="0" class="filter-tabs">
-            <ul class="head">
-                <li>全部</li>
-                <li>扩展库</li>
-                <li>工具链</li>
-                <li>关联项目</li>
+    <!-- ==================== 共享 Shell 勿散改 ==================== -->
+    <header class="site-header">
+        <div hx-ext="bny-nav" color="white">
+            <div class="head">
+                <a class="logo-box" href="index.html">
+                    <span class="logo"><img src="assets/img/TinyPHP.png" alt="TinyPHP"></span>
+                    <span>TinyPHP</span>
+                </a>
+            </div>
+            <ul class="menu">
+                <li><a class="trigger" href="index.html"><i class="bny-icon icon-home"></i><span>首页</span></a></li>
+                <li><a class="trigger" href="docs.html"><i class="bny-icon icon-book"></i><span>文档</span></a></li>
+                <li><a class="trigger" href="ecosystem.html"><i class="bny-icon icon-rocket"></i><span>生态</span></a>
+                </li>
+                <li><a class="trigger" href="about.html"><i class="bny-icon icon-info"></i><span>关于我们</span></a></li>
+                <li><a class="trigger" href="https://github.com/KingBes/TinyPHP" target="_blank"
+                        rel="noopener noreferrer" bny-spa-skip title="GitHub"><i
+                            class="bny-icon icon-github-fill"></i></a></li>
+                <li><a class="trigger" href="javascript:void(0)" id="mode-btn" bny-spa-skip title="主题模式 — 点击切换">
+                        <span class="mode-icons">
+                            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="4.5" />
+                                <path
+                                    d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M19.5 4.5l-1.8 1.8M6.3 17.7l-1.8 1.8" />
+                            </svg>
+                            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" />
+                            </svg>
+                        </span>
+                    </a></li>
             </ul>
-            <div class="body">
-                <!-- ===== 全部 ===== -->
-                <div>
-                    <div class="eco-grid">
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-cluster"></i></div>
-                                <h3 class="eco-name">pcntl</h3>
-                                <p class="eco-desc">进程控制：fork、wait、signal、exec。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="blue">进程</span><span class="bny-tag">扩展库</span></div>
+        </div>
+    </header>
+
+    <main bny-view>
+        <!-- ==================== 生态页内容 ==================== -->
+
+        <!-- 页头 -->
+        <section class="page-hero">
+            <div class="site-container">
+                <span class="eyebrow"><i class="bny-icon icon-rocket"></i> Ecosystem</span>
+                <h1 class="section-title">生态</h1>
+                <p class="section-subtitle">TinyPHP 的扩展库、工具链与关联项目。</p>
+            </div>
+        </section>
+
+        <!-- 主体 -->
+        <section class="section section--tight">
+            <div class="site-container">
+                <div class="eco-grid">
+                    <div class="bny-card eco-card" model="transition">
+                        <div class="body">
+                            <div class="eco-icon"><i class="bny-icon icon-bunny"></i></div>
+                            <h3 class="eco-name">vscode-tinyphp</h3>
+                            <p class="eco-desc">VS Code IDE 插件，为 TinyPHP 语言提供全面的开发体验支持。</p>
+                            <div class="eco-tags">
+                                <span class="bny-tag" color="green">IDE</span>
+                                <span class="bny-tag" color="blue">VS Code</span>
+                            </div>
+                            <div class="eco-actions">
+                                <a class="bny-btn" size="sm" href="https://github.com/tphp-lang/vscode-tinyphp"
+                                    target="_blank" rel="noopener noreferrer" bny-spa-skip><i
+                                        class="bny-icon icon-github-fill"></i> GitHub</a>
                             </div>
                         </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-setting"></i></div>
-                                <h3 class="eco-name">posix</h3>
-                                <p class="eco-desc">POSIX 接口：getpid、getuid、kill、信号处理。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="green">系统</span><span class="bny-tag">扩展库</span></div>
+                    </div>
+                    <div class="bny-card eco-card" model="transition">
+                        <div class="body">
+                            <div class="eco-icon"><i class="bny-icon icon-bunny"></i></div>
+                            <h3 class="eco-name">tphp-raylib</h3>
+                            <p class="eco-desc">一个使用 TinyPHP 对接 raylib 游戏库。</p>
+                            <div class="eco-tags">
+                                <span class="bny-tag" color="green">游戏库</span>
+                                <span class="bny-tag" color="blue">raylib</span>
+                            </div>
+                            <div class="eco-actions">
+                                <a class="bny-btn" size="sm" href="https://github.com/tphp-lang/tphp-raylib"
+                                    target="_blank" rel="noopener noreferrer" bny-spa-skip><i
+                                        class="bny-icon icon-github-fill"></i> GitHub</a>
                             </div>
                         </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-block"></i></div>
-                                <h3 class="eco-name">openssl</h3>
-                                <p class="eco-desc">加密与 TLS：对称/非对称加密、X509 证书、SSL 上下文。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="red">加密</span><span class="bny-tag">扩展库</span></div>
+                    </div>
+                    <div class="bny-card eco-card" model="transition">
+                        <div class="body">
+                            <div class="eco-icon"><i class="bny-icon icon-bunny"></i></div>
+                            <h3 class="eco-name">workerman</h3>
+                            <p class="eco-desc">workerman 功能模拟项目，仅做功能模拟。</p>
+                            <div class="eco-tags">
+                                <span class="bny-tag" color="green">应用框架</span>
+                                <span class="bny-tag" color="blue">web</span>
+                            </div>
+                            <div class="eco-actions">
+                                <a class="bny-btn" size="sm" href="https://github.com/tphp-lang/workerman"
+                                    target="_blank" rel="noopener noreferrer" bny-spa-skip><i
+                                        class="bny-icon icon-github-fill"></i> GitHub</a>
                             </div>
                         </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-calendar"></i></div>
-                                <h3 class="eco-name">calendar</h3>
-                                <p class="eco-desc">日历扩展：JD 互转、复活节日期、月份名。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="yellow">时间</span><span class="bny-tag">扩展库</span></div>
+                    </div>
+                    <div class="bny-card eco-card" model="transition">
+                        <div class="body">
+                            <div class="eco-icon"><i class="bny-icon icon-bunny"></i></div>
+                            <h3 class="eco-name">BunnyUI</h3>
+                            <p class="eco-desc">轻量级 HTMX 拓展 Web UI 组件库，本官网即基于 BunnyUI 构建。</p>
+                            <div class="eco-tags">
+                                <span class="bny-tag" color="green">HTMX</span>
+                                <span class="bny-tag" color="blue">Web UI</span>
                             </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-camera"></i></div>
-                                <h3 class="eco-name">exif</h3>
-                                <p class="eco-desc">EXIF 元数据：从 JPEG/TIFF 读取相机信息与 GPS。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="green">图像</span><span class="bny-tag">扩展库</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-highlight-fill"></i></div>
-                                <h3 class="eco-name">pcre</h3>
-                                <p class="eco-desc">正则表达式：NFA VM 实现 preg_match/preg_replace/preg_split。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="blue">正则</span><span class="bny-tag">扩展库</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-table"></i></div>
-                                <h3 class="eco-name">pdo</h3>
-                                <p class="eco-desc">PDO 数据访问抽象层：统一接口访问多种数据库。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="yellow">数据库</span><span class="bny-tag">扩展库</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-folder-open"></i></div>
-                                <h3 class="eco-name">sqlite3</h3>
-                                <p class="eco-desc">SQLite3 嵌入式数据库：SQL 查询、事务、预处理。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="yellow">数据库</span><span class="bny-tag">扩展库</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-cloud-server"></i></div>
-                                <h3 class="eco-name">stream</h3>
-                                <p class="eco-desc">流与 Socket：TCP/UDP socket、文件流、上下文选项。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="blue">网络</span><span class="bny-tag">扩展库</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-rocket-fill"></i></div>
-                                <h3 class="eco-name">PHAR 单文件</h3>
-                                <p class="eco-desc">GitHub Actions 自动构建全平台单文件 tphp，include/ 与 tcc/ 自动解压到同级目录。</p>
-                                <div class="eco-actions">
-                                    <a class="bny-btn" model="border" size="sm" href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-download"></i> 下载</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-thunderbolt-fill"></i></div>
-                                <h3 class="eco-name">Benchmark</h3>
-                                <p class="eco-desc">内置基准测试套件：php bench/run_bench.php [gcc|clang] [php]，对比 TCC/GCC/Clang 与原生 PHP。</p>
-                                <div class="eco-actions">
-                                    <a class="bny-btn" model="border" size="sm" href="https://github.com/KingBes/TinyPHP/blob/main/BENCHMARK_RESULTS.md" target="_blank" rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-link"></i> 查看结果</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-carryout"></i></div>
-                                <h3 class="eco-name">CI 测试</h3>
-                                <p class="eco-desc">#debug 指令驱动的测试框架：php .github/scripts/run_tests.php 递归扫描 test/ 自动比对预期输出。</p>
-                                <div class="eco-actions">
-                                    <a class="bny-btn" model="border" size="sm" href="https://github.com/KingBes/TinyPHP/blob/main/.github/scripts/run_tests.php" target="_blank" rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-link"></i> 查看脚本</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-bunny"></i></div>
-                                <h3 class="eco-name">BunnyUI</h3>
-                                <p class="eco-desc">轻量级 HTMX 拓展 Web UI 组件库，本官网即基于 BunnyUI 构建。</p>
-                                <div class="eco-tags">
-                                    <span class="bny-tag" color="green">HTMX</span>
-                                    <span class="bny-tag" color="blue">Web UI</span>
-                                </div>
-                                <div class="eco-actions">
-                                    <a class="bny-btn" size="sm" href="https://github.com/workbunny/bunny.ui" target="_blank" rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-github-fill"></i> GitHub</a>
-                                </div>
+                            <div class="eco-actions">
+                                <a class="bny-btn" size="sm" href="https://github.com/workbunny/bunny.ui"
+                                    target="_blank" rel="noopener noreferrer" bny-spa-skip><i
+                                        class="bny-icon icon-github-fill"></i> GitHub</a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ===== 扩展库 ===== -->
-                <div>
-                    <div class="eco-grid">
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-cluster"></i></div>
-                                <h3 class="eco-name">pcntl</h3>
-                                <p class="eco-desc">进程控制：fork、wait、signal、exec。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="blue">进程</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-setting"></i></div>
-                                <h3 class="eco-name">posix</h3>
-                                <p class="eco-desc">POSIX 接口：getpid、getuid、kill、信号处理。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="green">系统</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-block"></i></div>
-                                <h3 class="eco-name">openssl</h3>
-                                <p class="eco-desc">加密与 TLS：对称/非对称加密、X509 证书、SSL 上下文。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="red">加密</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-calendar"></i></div>
-                                <h3 class="eco-name">calendar</h3>
-                                <p class="eco-desc">日历扩展：JD 互转、复活节日期、月份名。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="yellow">时间</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-camera"></i></div>
-                                <h3 class="eco-name">exif</h3>
-                                <p class="eco-desc">EXIF 元数据：从 JPEG/TIFF 读取相机信息与 GPS。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="green">图像</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-highlight-fill"></i></div>
-                                <h3 class="eco-name">pcre</h3>
-                                <p class="eco-desc">正则表达式：NFA VM 实现 preg_match/preg_replace/preg_split。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="blue">正则</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-table"></i></div>
-                                <h3 class="eco-name">pdo</h3>
-                                <p class="eco-desc">PDO 数据访问抽象层：统一接口访问多种数据库。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="yellow">数据库</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-folder-open"></i></div>
-                                <h3 class="eco-name">sqlite3</h3>
-                                <p class="eco-desc">SQLite3 嵌入式数据库：SQL 查询、事务、预处理。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="yellow">数据库</span></div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-cloud-server"></i></div>
-                                <h3 class="eco-name">stream</h3>
-                                <p class="eco-desc">流与 Socket：TCP/UDP socket、文件流、上下文选项。</p>
-                                <div class="eco-tags"><span class="bny-tag" color="blue">网络</span></div>
-                            </div>
-                        </div>
+                <blockquote class="bny-blockquote">
+                    更多扩展持续开发中，欢迎通过 GitHub Issue 提交需求或 PR 贡献代码。
+                </blockquote>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== 共享页脚 ==================== -->
+    <footer class="site-footer">
+        <div class="site-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo-line"><img src="assets/img/TinyPHP.png" alt="TinyPHP"><span>TinyPHP</span></div>
+                    <p>PHP → C AOT 编译器，用 PHP 语法编写原生二进制，零运行时依赖，性能提升 300-500 倍。</p>
+                    <div class="footer-social">
+                        <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP"
+                            target="_blank" rel="noopener noreferrer" bny-spa-skip title="GitHub"><i
+                                class="bny-icon icon-github-fill"></i></a>
+                        <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP/actions"
+                            target="_blank" rel="noopener noreferrer" bny-spa-skip title="CI 构建"><i
+                                class="bny-icon icon-carryout"></i></a>
+                        <a class="bny-btn" model="border circle"
+                            href="https://github.com/KingBes/TinyPHP/blob/main/LICENSE" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip title="MIT 许可证"><i
+                                class="bny-icon icon-idcard"></i></a>
                     </div>
                 </div>
-
-                <!-- ===== 工具链 ===== -->
-                <div>
-                    <div class="eco-grid">
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-rocket-fill"></i></div>
-                                <h3 class="eco-name">PHAR 单文件</h3>
-                                <p class="eco-desc">GitHub Actions 自动构建全平台单文件 tphp，include/ 与 tcc/ 自动解压到同级目录。</p>
-                                <div class="eco-actions">
-                                    <a class="bny-btn" model="border" size="sm" href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-download"></i> 下载</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-thunderbolt-fill"></i></div>
-                                <h3 class="eco-name">Benchmark</h3>
-                                <p class="eco-desc">内置基准测试套件：php bench/run_bench.php [gcc|clang] [php]，对比 TCC/GCC/Clang 与原生 PHP。</p>
-                                <div class="eco-actions">
-                                    <a class="bny-btn" model="border" size="sm" href="https://github.com/KingBes/TinyPHP/blob/main/BENCHMARK_RESULTS.md" target="_blank" rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-link"></i> 查看结果</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-carryout"></i></div>
-                                <h3 class="eco-name">CI 测试</h3>
-                                <p class="eco-desc">#debug 指令驱动的测试框架：php .github/scripts/run_tests.php 递归扫描 test/ 自动比对预期输出。</p>
-                                <div class="eco-actions">
-                                    <a class="bny-btn" model="border" size="sm" href="https://github.com/KingBes/TinyPHP/blob/main/.github/scripts/run_tests.php" target="_blank" rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-link"></i> 查看脚本</a>
-                                </div>
-                            </div>
-                        </div>
+                <div class="footer-links">
+                    <div class="footer-col">
+                        <h4>导航</h4><a href="index.html">首页</a><a href="docs.html">文档</a><a
+                            href="ecosystem.html">生态</a><a href="about.html">关于我们</a>
                     </div>
-                </div>
-
-                <!-- ===== 关联项目 ===== -->
-                <div>
-                    <div class="eco-grid">
-                        <div class="bny-card eco-card" model="transition">
-                            <div class="body">
-                                <div class="eco-icon"><i class="bny-icon icon-bunny"></i></div>
-                                <h3 class="eco-name">BunnyUI</h3>
-                                <p class="eco-desc">轻量级 HTMX 拓展 Web UI 组件库，本官网即基于 BunnyUI 构建。属性化构建现代用户界面，结合简单性与超文本的强大功能。</p>
-                                <div class="eco-tags">
-                                    <span class="bny-tag" color="green">HTMX</span>
-                                    <span class="bny-tag" color="blue">Web UI</span>
-                                    <span class="bny-tag" color="yellow">MIT</span>
-                                </div>
-                                <div class="eco-actions">
-                                    <a class="bny-btn" size="sm" href="https://github.com/workbunny/bunny.ui" target="_blank" rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-github-fill"></i> GitHub</a>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="footer-col">
+                        <h4>资源</h4><a href="https://github.com/KingBes/TinyPHP" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip>GitHub 仓库</a><a
+                            href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer"
+                            bny-spa-skip>下载 PHAR</a><a href="https://github.com/KingBes/TinyPHP/blob/main/FUNCTIONS.md"
+                            target="_blank" rel="noopener noreferrer" bny-spa-skip>函数列表</a><a
+                            href="https://github.com/KingBes/TinyPHP/blob/main/BENCHMARK_RESULTS.md" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip>基准测试</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>关联项目</h4><a href="https://github.com/workbunny/bunny.ui" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip>BunnyUI</a><a href="ecosystem.html">扩展库</a><a
+                            href="ecosystem.html">工具链</a>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <blockquote class="bny-blockquote">
-            更多扩展持续开发中，欢迎通过 GitHub Issue 提交需求或 PR 贡献代码。
-        </blockquote>
-
-    </div>
-</section>
-
-</main>
-
-<!-- ==================== 共享页脚 ==================== -->
-<footer class="site-footer">
-    <div class="site-container">
-        <div class="footer-grid">
-            <div class="footer-brand">
-                <div class="logo-line"><img src="assets/img/TinyPHP.png" alt="TinyPHP"><span>TinyPHP</span></div>
-                <p>PHP → C AOT 编译器，用 PHP 语法编写原生二进制，零运行时依赖，性能提升 300-500 倍。</p>
-                <div class="footer-social">
-                    <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip title="GitHub"><i class="bny-icon icon-github-fill"></i></a>
-                    <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer" bny-spa-skip title="CI 构建"><i class="bny-icon icon-carryout"></i></a>
-                    <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" bny-spa-skip title="MIT 许可证"><i class="bny-icon icon-idcard"></i></a>
-                </div>
-            </div>
-            <div class="footer-links">
-                <div class="footer-col"><h4>导航</h4><a href="index.html">首页</a><a href="docs.html">文档</a><a href="ecosystem.html">生态</a><a href="about.html">关于我们</a></div>
-                <div class="footer-col"><h4>资源</h4><a href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip>GitHub 仓库</a><a href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer" bny-spa-skip>下载 PHAR</a><a href="https://github.com/KingBes/TinyPHP/blob/main/FUNCTIONS.md" target="_blank" rel="noopener noreferrer" bny-spa-skip>函数列表</a><a href="https://github.com/KingBes/TinyPHP/blob/main/BENCHMARK_RESULTS.md" target="_blank" rel="noopener noreferrer" bny-spa-skip>基准测试</a></div>
-                <div class="footer-col"><h4>关联项目</h4><a href="https://github.com/workbunny/bunny.ui" target="_blank" rel="noopener noreferrer" bny-spa-skip>BunnyUI</a><a href="ecosystem.html">扩展库</a><a href="ecosystem.html">工具链</a></div>
+            <div class="footer-bottom">
+                <span>© 2026 TinyPHP · MIT Licensed</span>
+                <span><i class="bny-icon icon-code"></i> 由 BunnyUI 强力驱动</span>
             </div>
         </div>
-        <div class="footer-bottom">
-            <span>© 2026 TinyPHP · MIT Licensed</span>
-            <span><i class="bny-icon icon-code"></i> 由 BunnyUI 强力驱动</span>
-        </div>
-    </div>
-</footer>
+    </footer>
 
-<script src="assets/js/site.js?v=6"></script>
+    <script src="assets/js/site.js?v=10"></script>
 </body>
+
 </html>

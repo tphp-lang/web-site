@@ -7,6 +7,8 @@
     <title>TinyPHP · PHP → C AOT 编译器</title>
     <meta name="keywords" content="TinyPHP, AOT, PHP, C, 编译器, PHPC, COS, 多线程">
     <meta name="description" content="TinyPHP 是一个 PHP → C AOT 编译器，用 PHP 语法编写原生二进制，零运行时依赖，性能提升 300-500 倍。">
+    <!-- hash 路由：地址栏使用 入口页#/目标路径，刷新不丢失状态 -->
+    <meta name="bny-spa-mode" content="hash">
     <link rel="icon" href="assets/img/TinyPHP.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="assets/img/TinyPHP.png">
     <!-- 防 FOUC：尽早确定主题，避免暗黑模式闪白 -->
@@ -36,7 +38,7 @@
     <script src="assets/bunny/bunny.js"></script>
     <!-- bny-spa 扩展 -->
     <link rel="stylesheet" href="assets/ext/spa.css">
-    <script src="assets/ext/spa.js"></script>
+    <script src="assets/ext/spa.js?v=2"></script>
     <!-- 全局共享样式 -->
     <link rel="stylesheet" href="assets/css/site.css?v=6">
     <link rel="stylesheet" href="assets/css/docs.css?v=6">
@@ -58,9 +60,12 @@
             <ul class="menu">
                 <li><a class="trigger" href="index.html"><i class="bny-icon icon-home"></i><span>首页</span></a></li>
                 <li><a class="trigger" href="docs.html"><i class="bny-icon icon-book"></i><span>文档</span></a></li>
-                <li><a class="trigger" href="ecosystem.html"><i class="bny-icon icon-rocket"></i><span>生态</span></a></li>
+                <li><a class="trigger" href="ecosystem.html"><i class="bny-icon icon-rocket"></i><span>生态</span></a>
+                </li>
                 <li><a class="trigger" href="about.html"><i class="bny-icon icon-info"></i><span>关于我们</span></a></li>
-                <li><a class="trigger" href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip title="GitHub"><i class="bny-icon icon-github-fill"></i></a></li>
+                <li><a class="trigger" href="https://github.com/KingBes/TinyPHP" target="_blank"
+                        rel="noopener noreferrer" bny-spa-skip title="GitHub"><i
+                            class="bny-icon icon-github-fill"></i></a></li>
                 <li><a class="trigger" href="javascript:void(0)" id="mode-btn" bny-spa-skip title="主题模式 — 点击切换">
                         <span class="mode-icons">
                             <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -69,8 +74,8 @@
                                 <path
                                     d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M19.5 4.5l-1.8 1.8M6.3 17.7l-1.8 1.8" />
                             </svg>
-                            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" />
                             </svg>
                         </span>
@@ -93,13 +98,18 @@
                     </p>
                     <div class="hero-actions">
                         <a class="bny-btn" href="docs.html"><i class="bny-icon icon-book"></i> 快速开始</a>
-                        <a class="bny-btn" model="border" href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-github-fill"></i> GitHub</a>
+                        <a class="bny-btn" model="border" href="https://github.com/KingBes/TinyPHP" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-github-fill"></i> GitHub</a>
                     </div>
                     <div class="hero-meta">
-                        <div class="meta-item"><span class="meta-num">300-500x</span><span class="meta-label">性能提升</span></div>
-                        <div class="meta-item"><span class="meta-num">18-36x</span><span class="meta-label">数组遍历</span></div>
-                        <div class="meta-item"><span class="meta-num">16B</span><span class="meta-label">对象头大小</span></div>
-                        <div class="meta-item"><span class="meta-num">312+</span><span class="meta-label">内置函数</span></div>
+                        <div class="meta-item"><span class="meta-num">300-500x</span><span
+                                class="meta-label">性能提升</span></div>
+                        <div class="meta-item"><span class="meta-num">18-36x</span><span class="meta-label">数组遍历</span>
+                        </div>
+                        <div class="meta-item"><span class="meta-num">16B</span><span class="meta-label">对象头大小</span>
+                        </div>
+                        <div class="meta-item"><span class="meta-num">312+</span><span class="meta-label">内置函数</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -117,14 +127,16 @@
                         <div class="body">
                             <div class="feature-icon"><i class="bny-icon icon-thunderbolt-fill"></i></div>
                             <h3 class="feature-title">AOT 编译</h3>
-                            <p class="feature-desc">PHP 源码直接编译为原生 C，再由 GCC/Clang/TCC 生成二进制。无 Zend VM、无 OPCache、零运行时依赖。</p>
+                            <p class="feature-desc">PHP 源码直接编译为原生 C，再由 GCC/Clang/TCC 生成二进制。无 Zend VM、无 OPCache、零运行时依赖。
+                            </p>
                         </div>
                     </div>
                     <div class="bny-card feature-card" model="transition">
                         <div class="body">
                             <div class="feature-icon"><i class="bny-icon icon-build-fill"></i></div>
-                            <h3 class="feature-title">三编译器四平台</h3>
-                            <p class="feature-desc">TCC 亚秒编译，GCC/Clang -O2 再提速 3-10 倍。支持 Windows/Linux/macOS x86_64 与 aarch64。</p>
+                            <h3 class="feature-title">三编译器多平台</h3>
+                            <p class="feature-desc">TCC 亚秒编译，GCC/Clang -O2 再提速 3-10 倍。支持 Windows/Linux/macOS x86_64 与
+                                aarch64。</p>
                         </div>
                     </div>
                     <div class="bny-card feature-card" model="transition">
@@ -138,21 +150,24 @@
                         <div class="body">
                             <div class="feature-icon"><i class="bny-icon icon-cluster"></i></div>
                             <h3 class="feature-title">多线程支持</h3>
-                            <p class="feature-desc">Thread/Mutex/CondVar/WaitGroup OOP API，基于 tinycthread。Thread-Local 运行时，多线程无锁竞争。</p>
+                            <p class="feature-desc">Thread/Mutex/CondVar/WaitGroup OOP API，基于 tinycthread。Thread-Local
+                                运行时，多线程无锁竞争。</p>
                         </div>
                     </div>
                     <div class="bny-card feature-card" model="transition">
                         <div class="body">
                             <div class="feature-icon"><i class="bny-icon icon-api-fill"></i></div>
                             <h3 class="feature-title">C 互操作 PHPC</h3>
-                            <p class="feature-desc">完整的 PHP ↔ C 双向互操作：C-&gt;func() 直接调用，C.Type 类型注解，数组/对象/回调互操作，defer 资源管理。</p>
+                            <p class="feature-desc">完整的 PHP ↔ C 双向互操作：C-&gt;func() 直接调用，C.Type 类型注解，数组/对象/回调互操作，defer
+                                资源管理。</p>
                         </div>
                     </div>
                     <div class="bny-card feature-card" model="transition">
                         <div class="body">
                             <div class="feature-icon"><i class="bny-icon icon-deploymentunit"></i></div>
                             <h3 class="feature-title">扩展系统</h3>
-                            <p class="feature-desc">对标 PHP extension，#import 按需引入。已内置 pcntl、posix、openssl、pcre、pdo、sqlite3、stream 等。</p>
+                            <p class="feature-desc">对标 PHP extension，#import 按需引入。已内置
+                                pcntl、posix、openssl、pcre、pdo、sqlite3、stream 等。</p>
                         </div>
                     </div>
                 </div>
@@ -175,16 +190,17 @@
                         </ul>
                         <div class="body">
                             <div>
-                                <pre><code class="language-php">&lt;?php
+                                <pre hx-ext="bny-code" mode="highlight" lang="php">&lt;?php 
 class Main {
     public function main(): void {
         echo "hello world\n";
     }
-}</code></pre>
-                                <blockquote class="bny-blockquote">$ php tphp.php hello.php&nbsp;&nbsp;→&nbsp;&nbsp;$ ./hello&nbsp;&nbsp;→&nbsp;&nbsp;hello world</blockquote>
+}</pre>
+                                <blockquote class="bny-blockquote">$ php tphp.php hello.php&nbsp;&nbsp;→&nbsp;&nbsp;$
+                                    ./hello&nbsp;&nbsp;→&nbsp;&nbsp;hello world</blockquote>
                             </div>
                             <div>
-                                <pre><code class="language-php">#include "my_func.h"
+                                <pre hx-ext="bny-code" mode="highlight" lang="php">#include "my_func.h"
 
 function add(int $a, int $b): C.int {
     return C-&gt;my_add(c_int($a), c_int($b));
@@ -195,10 +211,10 @@ class Main {
         int $r = C-&gt;my_add(c_int(10), c_int(20));
         var_dump($r);  // int(30)
     }
-}</code></pre>
+}</pre>
                             </div>
                             <div>
-                                <pre><code class="language-php">&lt;?php
+                                <pre hx-ext="bny-code" mode="highlight" lang="php">&lt;?php
 class Main {
     public function main(): void {
         $t = new Thread(function(): int {
@@ -208,7 +224,7 @@ class Main {
         $t-&gt;start();
         echo "ret=" . $t-&gt;join() . "\n";  // ret=42
     }
-}</code></pre>
+}</pre>
                             </div>
                         </div>
                     </div>
@@ -278,7 +294,8 @@ class Main {
                     <p class="cta-desc">下载源码，几分钟内编译出你的第一个原生 PHP 程序。</p>
                     <div class="cta-actions">
                         <a class="bny-btn" href="docs.html"><i class="bny-icon icon-book"></i> 查看文档</a>
-                        <a class="bny-btn" model="border" href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-github-fill"></i> 源码仓库</a>
+                        <a class="bny-btn" model="border" href="https://github.com/KingBes/TinyPHP" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-github-fill"></i> 源码仓库</a>
                     </div>
                 </div>
             </div>
@@ -294,9 +311,16 @@ class Main {
                     <div class="logo-line"><img src="assets/img/TinyPHP.png" alt="TinyPHP"><span>TinyPHP</span></div>
                     <p>PHP → C AOT 编译器，用 PHP 语法编写原生二进制，零运行时依赖，性能提升 300-500 倍。</p>
                     <div class="footer-social">
-                        <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip title="GitHub"><i class="bny-icon icon-github-fill"></i></a>
-                        <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer" bny-spa-skip title="CI 构建"><i class="bny-icon icon-carryout"></i></a>
-                        <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" bny-spa-skip title="MIT 许可证"><i class="bny-icon icon-idcard"></i></a>
+                        <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP"
+                            target="_blank" rel="noopener noreferrer" bny-spa-skip title="GitHub"><i
+                                class="bny-icon icon-github-fill"></i></a>
+                        <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP/actions"
+                            target="_blank" rel="noopener noreferrer" bny-spa-skip title="CI 构建"><i
+                                class="bny-icon icon-carryout"></i></a>
+                        <a class="bny-btn" model="border circle"
+                            href="https://github.com/KingBes/TinyPHP/blob/main/LICENSE" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip title="MIT 许可证"><i
+                                class="bny-icon icon-idcard"></i></a>
                     </div>
                 </div>
                 <div class="footer-links">
@@ -309,14 +333,19 @@ class Main {
                     </div>
                     <div class="footer-col">
                         <h4>资源</h4>
-                        <a href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer" bny-spa-skip>GitHub 仓库</a>
-                        <a href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer" bny-spa-skip>下载 PHAR</a>
-                        <a href="https://github.com/KingBes/TinyPHP/blob/main/FUNCTIONS.md" target="_blank" rel="noopener noreferrer" bny-spa-skip>函数列表</a>
-                        <a href="https://github.com/KingBes/TinyPHP/blob/main/BENCHMARK_RESULTS.md" target="_blank" rel="noopener noreferrer" bny-spa-skip>基准测试</a>
+                        <a href="https://github.com/KingBes/TinyPHP" target="_blank" rel="noopener noreferrer"
+                            bny-spa-skip>GitHub 仓库</a>
+                        <a href="https://github.com/KingBes/TinyPHP/actions" target="_blank" rel="noopener noreferrer"
+                            bny-spa-skip>下载 PHAR</a>
+                        <a href="https://github.com/KingBes/TinyPHP/blob/main/FUNCTIONS.md" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip>函数列表</a>
+                        <a href="https://github.com/KingBes/TinyPHP/blob/main/BENCHMARK_RESULTS.md" target="_blank"
+                            rel="noopener noreferrer" bny-spa-skip>基准测试</a>
                     </div>
                     <div class="footer-col">
                         <h4>关联项目</h4>
-                        <a href="https://github.com/workbunny/bunny.ui" target="_blank" rel="noopener noreferrer" bny-spa-skip>BunnyUI</a>
+                        <a href="https://github.com/workbunny/bunny.ui" target="_blank" rel="noopener noreferrer"
+                            bny-spa-skip>BunnyUI</a>
                         <a href="ecosystem.html">扩展库</a>
                         <a href="ecosystem.html">工具链</a>
                     </div>
@@ -329,7 +358,7 @@ class Main {
         </div>
     </footer>
 
-    <script src="assets/js/site.js?v=6"></script>
+    <script src="assets/js/site.js?v=10"></script>
 </body>
 
 </html>

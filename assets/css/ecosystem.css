@@ -45,14 +45,9 @@
 }
 
 /* ---------- 生态卡片 ---------- */
-.eco-card {
-    height: 100%;
-}
-
 .eco-card .body {
     display: flex;
     flex-direction: column;
-    height: 100%;
     padding: 22px 22px 20px;
 }
 
@@ -82,7 +77,6 @@
     color: var(--black-shallow);
     line-height: 1.7;
     margin: 0 0 14px;
-    flex: 1;
 }
 
 .eco-tags {
@@ -106,9 +100,4 @@
 
 .eco-actions .bny-btn {
     font-size: var(--font-size-sm);
-}
-
-/* ---------- 筛选 tab ---------- */
-.filter-tabs .head {
-    margin-bottom: 24px;
 }
