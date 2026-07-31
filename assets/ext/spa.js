@@ -541,6 +541,31 @@
         }
     }
 
+    var _mdRendererLoading = false;
+    /**
+     * 渲染器自愈：若 bny.markdown 尚未就绪，尝试（重新）加载 markdown.js 后再回调。
+     * 覆盖「脚本被临时拦截 / 加载时序竞态 / 旧缓存未注册」导致裸源码的场景。
+     */
+    function ensureMarkdownRenderer(cb) {
+        if (typeof bny !== 'undefined' && typeof bny.markdown === 'function') { cb(true); return; }
+        if (_mdRendererLoading) {
+            var tries = 0;
+            var timer = setInterval(function () {
+                tries++;
+                if (typeof bny !== 'undefined' && typeof bny.markdown === 'function') { clearInterval(timer); cb(true); }
+                else if (tries > 60) { clearInterval(timer); cb(false); }
+            }, 100);
+            return;
+        }
+        _mdRendererLoading = true;
+        var s = document.createElement('script');
+        s.src = 'assets/ext/markdown.js?v=1';
+        s.setAttribute('data-bny-md-loader', '1');
+        s.onload = function () { cb(true); };
+        s.onerror = function () { cb(false); };
+        document.head.appendChild(s);
+    }
+
     /**
      * 根据已渲染的 Markdown 正文，自动生成右侧锚点栏（TOC）
      * 提取 h2[id] / h3[id]，复用 bny-anchor 组件实现滚动高亮
@@ -612,6 +637,20 @@
                 || (viewPath.length > 1 ? findViewByPath(document, [0]) : null)
                 || document.querySelector('[bny-view]');
             if (!mdView) { location.href = fallbackUrl; return; }
+            if (typeof bny === 'undefined' || typeof bny.markdown !== 'function') {
+                // 渲染器尚未就绪：先占位，异步自愈后重渲染
+                var pendingHtml = html;
+                var pendingUrl = _currentUrl;
+                mdView.innerHTML = '<div class="bny-alert" model="warning"><i class="bny-icon icon-info-circle"></i> 正在加载 Markdown 渲染器…</div>';
+                ensureMarkdownRenderer(function (ok) {
+                    mdView.innerHTML = renderDocsMarkdown(pendingHtml, pendingUrl);
+                    executeScripts(mdView);
+                    if (typeof htmx !== 'undefined' && htmx.process) { htmx.process(mdView); }
+                    mdView.dispatchEvent(new CustomEvent('htmx:load', { bubbles: true, detail: { elt: mdView } }));
+                    mdView.dispatchEvent(new CustomEvent('bny:spa:loaded', { bubbles: true, detail: { url: pendingUrl, viewPath: viewPath } }));
+                });
+                return;
+            }
             mdView.innerHTML = renderDocsMarkdown(html, _currentUrl);
             executeScripts(mdView);
             if (typeof htmx !== 'undefined' && htmx.process) { htmx.process(mdView); }
