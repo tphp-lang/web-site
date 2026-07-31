@@ -18,7 +18,9 @@
     min-width: 0;
 }
 
-.docs-main { min-width: 0; }
+.docs-main {
+    min-width: 0;
+}
 
 /* ---------- 左侧章节菜单（PC 内联；仅移动端变抽屉，见底部响应式） ---------- */
 .docs-sidebar {
@@ -239,7 +241,9 @@
     display: block;
 }
 
-.docs-menu-toggle-text { line-height: 1; }
+.docs-menu-toggle-text {
+    line-height: 1;
+}
 
 /* 抽屉标题栏 / 遮罩：PC 端不渲染 */
 .docs-drawer-head,
@@ -257,121 +261,70 @@
         grid-template-columns: 220px 1fr;
         gap: 32px;
     }
+
     .docs-content {
         grid-template-columns: 1fr;
     }
+
     .docs-anchor {
         display: none;
     }
 }
 
-/* ========== 响应式：≤992px 启用抽屉式弹出菜单（移动端） ========== */
+/* ========== 响应式：≤992px 移动端 — 目录改用 BunnyUI bny-page 弹窗 ========== */
 @media (max-width: 992px) {
     .docs-layout {
         grid-template-columns: 1fr;
         gap: 24px;
     }
 
-    /* 工具栏仅作为触发按钮的容器；用 contents 不产生额外盒子 */
-    .docs-toolbar {
-        display: contents;
-    }
-
-    .docs-menu-toggle {
-        position: fixed;
-        right: 18px;
-        bottom: 18px;
-        z-index: 210;
-        width: 56px;
-        height: 56px;
-        padding: 0;
-        border-radius: 50%;
-        justify-content: center;
-        box-shadow: 0 8px 22px rgba(0, 0, 0, .22);
-    }
-
-    .docs-menu-toggle-text {
+    /* PC 内联侧栏在移动端隐藏，目录改由 bny-page 弹出 */
+    .docs-sidebar {
         display: none;
     }
 
-    /* 左侧菜单变抽屉 */
-    .docs-sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 200;
-        width: min(82vw, 300px);
-        height: 100vh;
-        max-height: none;
-        background: var(--white);
-        border-right: 1px solid var(--gray-shallow);
-        box-shadow: 4px 0 28px rgba(0, 0, 0, .14);
-        transform: translateX(-100%);
-        transition: transform .28s ease;
-        overflow-y: auto;
-        padding: 18px 0 28px;
-    }
-
-    body.docs-menu-open .docs-sidebar {
-        transform: translateX(0);
-    }
-
-    /* 抽屉标题栏 */
-    .docs-drawer-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 4px 20px 12px;
-        margin-bottom: 6px;
-        border-bottom: 1px solid var(--gray-shallow);
-    }
-
-    .docs-drawer-head .aside-title {
-        margin: 0;
-    }
-
-    .docs-drawer-close {
+    /* 工具栏：显示触发按钮（PC 端 .docs-toolbar 为 none） */
+    .docs-toolbar {
         display: block;
-        border: none;
-        background: none;
-        color: var(--black-shallow);
-        font-size: 20px;
-        line-height: 1;
-        cursor: pointer;
-        padding: 4px 8px;
+    }
+
+    /* 左上角浮空按钮（位于 sticky header 之下，避免遮挡导航） */
+    .docs-menu-toggle {
+        position: fixed;
+        top: 72px;
+        left: 14px;
+        z-index: 1200;            /* 高于 header(1000)，低于 bny-page(9999) */
+        width: auto;
+        height: auto;
+        padding: 9px 16px;
         border-radius: var(--border-radius-full);
-        transition: var(--transition-fast);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, .22);
     }
+}
 
-    .docs-drawer-close:hover {
-        background: var(--default-alpha-10);
-        color: var(--default);
-    }
+/* bny-page 弹窗内的目录样式：与站点 docs-menu 视觉一致，并按触控放大点击区域 */
+.bny-page .docs-menu--popup {
+    border-left: none;
+    padding: 8px 0;
+    gap: 4px;
+}
 
-    /* 遮罩 */
-    .docs-backdrop {
-        display: block;
-        position: fixed;
-        inset: 0;
-        z-index: 150;
-        background: rgba(15, 18, 25, .42);
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity .26s ease, visibility .26s ease;
-    }
+.bny-page .docs-menu--popup a {
+    font-size: var(--font-size-16);
+    padding: 13px 22px;
+    border-left: 2px solid transparent;
+}
 
-    body.docs-menu-open .docs-backdrop {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    body.docs-menu-open {
-        overflow: hidden;
-    }
+.bny-page .docs-menu--popup a.active {
+    border-left-color: var(--default);
 }
 
 @media (max-width: 640px) {
     .docs-layout {
         gap: 18px;
     }
+}
+
+.token.operator {
+    background-color: rgba(0, 0, 0, 0) !important;
 }

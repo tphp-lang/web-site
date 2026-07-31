@@ -133,55 +133,52 @@
         });
     }
 
-    /* ---------- 文档页目录抽屉（弹出菜单） ---------- */
+    /* ---------- 文档页目录：移动端用 BunnyUI bny-page 弹窗（左上角） ---------- */
+    // PC 端：左侧内联 .docs-sidebar 直接显示，无需弹窗。
+    // 移动端（≤992px）：点击左上角按钮 → bny.page() 弹出目录，跳转后自动关闭。
+    // 用框架组件而非手写 fixed 抽屉，规避 SPA 重渲染后事件绑定丢失导致按钮失效的问题。
     function initDocsDrawer() {
         var toggle = document.getElementById('docs-menu-toggle');
-        var closeBtn = document.getElementById('docs-drawer-close');
-        var backdrop = document.getElementById('docs-backdrop');
-        if (!toggle || !backdrop) return;
+        if (!toggle || toggle._tphpDocsBound) return;
+        toggle._tphpDocsBound = true;
 
-        function setOpen(open) {
-            document.body.classList.toggle('docs-menu-open', open);
-            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        }
-        function openMenu() { setOpen(true); }
-        function closeMenu() { setOpen(false); }
+        var mq = window.matchMedia('(max-width: 992px)');
 
-        // 元素级监听：用元素自身 flag 防重绑（DOM 重建后会换新元素）
-        if (!toggle._tphpDrawer) {
-            toggle._tphpDrawer = true;
-            toggle.addEventListener('click', function (e) {
-                e.preventDefault();
-                setOpen(!document.body.classList.contains('docs-menu-open'));
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            // 仅移动端走弹窗；PC 端按钮隐藏，此处不会被点到
+            if (!mq.matches) return;
+            if (typeof bny === 'undefined' || typeof bny.page !== 'function') {
+                console.warn('[docs] bny.page 不可用，无法弹出文档目录');
+                return;
+            }
+            var menu = document.querySelector('.docs-sidebar .docs-menu');
+            if (!menu) return;
+            // 同步当前 active 高亮（clone 内联侧栏的 innerHTML）
+            var html = '<nav class="docs-menu docs-menu--popup">' + menu.innerHTML + '</nav>';
+            bny.page(html, {
+                title: '文档目录',
+                offset: ['0px', '64px'],            // 左上角、sticky header 之下
+                width: 'min(86vw, 300px)',
+                height: 'calc(100% - 64px)',
+                shade: true,                       // 自带全屏遮罩，点击关闭
+                anim: 'fade'
             });
-        }
-        if (closeBtn && !closeBtn._tphpDrawer) {
-            closeBtn._tphpDrawer = true;
-            closeBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                closeMenu();
-            });
-        }
-        if (!backdrop._tphpDrawer) {
-            backdrop._tphpDrawer = true;
-            backdrop.addEventListener('click', closeMenu);
-        }
-        var menu = document.querySelector('.docs-menu');
-        if (menu && !menu._tphpDrawer) {
-            menu._tphpDrawer = true;
-            menu.addEventListener('click', function (e) {
-                if (e.target.closest('.docs-menu a[href]')) closeMenu();
-            });
-        }
+            // 让弹窗内链接被 bny-spa 的 document 委托正确拦截（保险）
+            var pages = document.querySelectorAll('.bny-page');
+            var last = pages[pages.length - 1];
+            if (last && window.htmx && htmx.process) htmx.process(last);
+        });
 
-        // 文档级监听：整个会话只绑一次
-        if (!document._tphpDrawerDoc) {
-            document._tphpDrawerDoc = true;
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape' && document.body.classList.contains('docs-menu-open')) closeMenu();
+        // SPA 文档子页加载完成后，关闭含目录的 bny-page 弹窗（整个会话只绑一次）
+        if (!document._tphpDocsLoadedBound) {
+            document._tphpDocsLoadedBound = true;
+            document.addEventListener('bny:spa:loaded', function () {
+                document.querySelectorAll('.bny-page .close-btn').forEach(function (btn) {
+                    var page = btn.closest('.bny-page');
+                    if (page && page.querySelector('.docs-menu')) btn.click();
+                });
             });
-            // SPA 内容交换（含深链进入/子页切换）后自动收起
-            document.addEventListener('bny:spa:loaded', function () { closeMenu(); });
         }
     }
 

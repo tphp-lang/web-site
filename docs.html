@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="assets/ext/markdown.css">
     <script src="assets/ext/spa.js?v=6"></script>
     <link rel="stylesheet" href="assets/css/site.css?v=6">
-    <link rel="stylesheet" href="assets/css/docs.css?v=10">
+    <link rel="stylesheet" href="assets/css/docs.css?v=11">
 </head>
 
 <body hx-ext="bny-spa">
@@ -94,10 +94,10 @@
         <!-- 主体三栏 -->
         <section class="section section--tight">
             <div class="site-container">
-                <!-- 目录触发：桌面端为内联按钮，移动端为浮空按钮 -->
+                <!-- 目录触发：PC 端隐藏；移动端为左上角浮空按钮，点击用 BunnyUI 的 bny-page 弹出目录 -->
                 <div class="docs-toolbar">
                     <button type="button" class="docs-menu-toggle" id="docs-menu-toggle"
-                            aria-label="打开文档目录" aria-expanded="false" aria-controls="docs-drawer">
+                            aria-label="打开文档目录">
                         <svg class="docs-menu-toggle-icon" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2" stroke-linecap="round"
                              stroke-linejoin="round" aria-hidden="true">
@@ -108,13 +108,8 @@
                 </div>
 
                 <div class="docs-layout">
-                    <!-- ========== 左侧菜单（抽屉式弹出，不参与子视口交换） ========== -->
-                    <aside class="docs-sidebar docs-drawer" id="docs-drawer">
-                        <div class="docs-drawer-head">
-                            <span class="aside-title">章节导航</span>
-                            <button type="button" class="docs-drawer-close" id="docs-drawer-close"
-                                    aria-label="关闭目录">✕</button>
-                        </div>
+                    <!-- ========== 左侧菜单（PC 内联；移动端由 bny-page 弹出） ========== -->
+                    <aside class="docs-sidebar" id="docs-drawer">
                         <nav class="docs-menu">
                             <a href="docs/quickstart.md" bny-view-target="#docs-view" class="active">快速开始</a>
                             <a href="docs/syntax.md" bny-view-target="#docs-view">语法特性</a>
@@ -135,8 +130,6 @@
 
     </main>
 
-    <!-- 抽屉遮罩（固定全屏，点击收起目录） -->
-    <div class="docs-backdrop" id="docs-backdrop"></div>
 
     <!-- ==================== 共享页脚 ==================== -->
     <footer class="site-footer">
@@ -186,7 +179,7 @@
         </div>
     </footer>
 
-    <script src="assets/js/site.js?v=13"></script>
+    <script src="assets/js/site.js?v=14"></script>
 </body>
 
 </html>
