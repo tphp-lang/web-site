@@ -651,13 +651,12 @@
 
         var code = codeLines.join('\n');
         var langAttr = lang ? ' lang="' + lang + '"' : '';
-        // 自动检测代码高亮库：优先 highlight.js（本站点已加载 atom-one-dark 主题与语言包），
-        // 其次 prismjs。站点仅引入 highlight.js，故强制走 hljs 以避免 bny-code 用 Prism 处理失败清空。
+        // 自动检测代码高亮库：本站点刻意使用 prismjs（用户将 highlight.js 替换为 prismjs）
         var modeAttr = '';
-        if (typeof hljs !== 'undefined') {
-            modeAttr = ' mode="highlight"';
-        } else if (typeof Prism !== 'undefined') {
+        if (typeof Prism !== 'undefined') {
             modeAttr = ' mode="prismjs"';
+        } else if (typeof hljs !== 'undefined') {
+            modeAttr = ' mode="highlight"';
         }
         // 转义 HTML：防止浏览器将代码中的标签解析为真实元素
         // bny-code 通过 textContent 读取时会自动反转义回原始代码

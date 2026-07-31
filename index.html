@@ -25,17 +25,13 @@
             if (t === 'dark') document.documentElement.classList.add('dark');
         })();
     </script>
-    <!-- highlight.js（全局常驻，不标 bny-spa） -->
-    <link rel="stylesheet" href="assets/highlight/styles/atom-one-dark.min.css">
-    <script src="assets/highlight/highlight.min.js"></script>
-    <script src="assets/highlight/languages/javascript.min.js"></script>
-    <script src="assets/highlight/languages/php.min.js"></script>
-    <script src="assets/highlight/languages/css.min.js"></script>
-    <script src="assets/highlight/languages/xml.min.js"></script>
+    <!-- prismjs.js（全局常驻，不标 bny-spa） -->
+    <link rel="stylesheet" href="assets/prismjs/prism.css">
+    <script src="assets/prismjs/prism.js"></script>
     <!-- bunny-ui 核心 -->
     <link rel="stylesheet" href="assets/bunny/bunny.css">
     <link rel="stylesheet" href="assets/css/theme.css?v=5">
-    <script src="assets/bunny/bunny.js"></script>
+    <script src="assets/bunny/bunny.js?v=2"></script>
     <!-- bny-spa 扩展 -->
     <link rel="stylesheet" href="assets/ext/spa.css">
     <script src="assets/ext/spa.js?v=2"></script>
@@ -98,8 +94,9 @@
                     </p>
                     <div class="hero-actions">
                         <a class="bny-btn" href="docs.html"><i class="bny-icon icon-book"></i> 快速开始</a>
-                        <a class="bny-btn" model="border" href="https://github.com/tphp-lang/TinyPHP/releases" target="_blank"
-                            rel="noopener noreferrer" bny-spa-skip><i class="bny-icon icon-download"></i> 立即下载</a>
+                        <a class="bny-btn" model="border" href="https://github.com/tphp-lang/TinyPHP/releases"
+                            target="_blank" rel="noopener noreferrer" bny-spa-skip><i
+                                class="bny-icon icon-download"></i> 立即下载</a>
                     </div>
                     <div class="hero-meta">
                         <div class="meta-item"><span class="meta-num">300-500x</span><span
