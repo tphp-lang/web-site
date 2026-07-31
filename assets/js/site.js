@@ -157,12 +157,12 @@
             // 同步当前 active 高亮（clone 内联侧栏的 innerHTML）
             var html = '<nav class="docs-menu docs-menu--popup">' + menu.innerHTML + '</nav>';
             bny.page(html, {
-                title: '文档目录',
-                offset: ['0px', '64px'],            // 左上角、sticky header 之下
-                width: 'min(86vw, 300px)',
-                height: 'calc(100% - 64px)',
+                title: false,
+                offset: "left",            // 左上角、sticky header 之下
+                width: '300px',
+                height: '100%',
                 shade: true,                       // 自带全屏遮罩，点击关闭
-                anim: 'fade'
+                anim: 'left'
             });
             // 让弹窗内链接被 bny-spa 的 document 委托正确拦截（保险）
             var pages = document.querySelectorAll('.bny-page');

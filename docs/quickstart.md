@@ -5,7 +5,7 @@ TinyPHP 是一个 PHP → C AOT 编译器，用 PHP 8.5 强类型语法编写原
 ### 编译单文件 {#compile-single}
 
 ```bash
-php tphp.php test/var/var.php
+tphp test/var/var.php
 ```
 
 ### 编译多文件 {#compile-multi}
@@ -13,15 +13,15 @@ php tphp.php test/var/var.php
 多文件按入口顺序合并编译，被依赖文件需显式列出：
 
 ```bash
-php tphp.php main.php demo.php
+tphp main.php demo.php
 ```
 
-### 编译 C 互操作 {#compile-phpc}
+### 编译整个目录
 
-桥接 PHP 与 C 源码时，将 `.c` 文件直接追加到命令末尾：
+会获取整个当前目录的php文件，`.`点表示即可：
 
 ```bash
-php tphp.php main.php bridge.php lib.c
+tphp .
 ```
 
 ### CLI 选项 {#cli-options}
@@ -42,11 +42,24 @@ php tphp.php main.php bridge.php lib.c
 每个程序需要一个 `Main` 类与 `main()` 入口方法：
 
 ```php
-<?php
-class Main {
-    public function main(): void {
+<?php // <?php 标签 可选
+
+class Main
+{
+    // 构造函数 — 接收命令行参数（可选，默认可省略）
+    public function __construct(int $argc, array $argv)
+    {
+        // $argc — 参数个数，$argv — 参数数组
+    }
+
+    // 入口函数 — 必须为 public function main(): void
+    public function main(): void
+    {
         echo "hello world\n";
     }
+
+    // 析构函数 — 程序退出前自动调用（可选）
+    public function __destruct() {}
 }
 ```
 
@@ -70,5 +83,9 @@ class Main {
 运行比对：
 
 ```bash
-php tphp.php test.php --debug
+tphp test.php --debug
 ```
+
+> `#debug text` 预期该行输出为 `text`（精确匹配）<br>
+> `#debug` 预期该行为空行<br>
+> `#debug ~ text` 预期近似值（如时间/时区相关），`[REF]` 只展示不判错

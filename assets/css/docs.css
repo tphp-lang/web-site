@@ -292,8 +292,9 @@
     .docs-menu-toggle {
         position: fixed;
         top: 72px;
-        left: 14px;
-        z-index: 1200;            /* 高于 header(1000)，低于 bny-page(9999) */
+        right: 14px;
+        z-index: 1200;
+        /* 高于 header(1000)，低于 bny-page(9999) */
         width: auto;
         height: auto;
         padding: 9px 16px;
