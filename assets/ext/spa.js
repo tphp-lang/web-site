@@ -418,7 +418,7 @@
             // 捕获本次 fetch 的最终 URL；swapContent 可能触发嵌套导航（如自动导航脚本
             // 调用 navigate），嵌套导航会修改 _currentUrl，此处需用捕获值判断
             var fetchUrl = _currentUrl;
-            swapContent(html, url, viewPath);
+            swapContent(html, url, viewPath, isMarkdownUrl(_currentUrl));
             // 若 swapContent 触发了嵌套导航，_currentUrl 已变，
             // 嵌套导航会自行更新历史和滚动，此处跳过避免重复/错误的历史记录
             if (_currentUrl !== fetchUrl) return;
@@ -487,7 +487,7 @@
         })
         .then(function (html) {
             var fetchUrl = _currentUrl;
-            swapContent(html, url, viewPath);
+            swapContent(html, url, viewPath, isMarkdownUrl(_currentUrl));
             // 嵌套导航已自行更新历史，跳过避免重复
             if (_currentUrl !== fetchUrl) return;
             // POST 后通常是 PRG 重定向，用 pushState 更新 URL
@@ -526,8 +526,100 @@
      * @param {string} html 响应 HTML
      * @param {string} fallbackUrl 出错时的回退 URL
      * @param {number[]} [viewPath] 目标视口路径，默认 [0]
+     * @param {boolean} [isMarkdown] 响应体是否为原始 Markdown（需先渲染）
      */
-    function swapContent(html, fallbackUrl, viewPath) {
+    function isMarkdownUrl(u) {
+        try {
+            var url = new URL(u, location.href);
+            // pathname 形式（fetch 响应 URL：/docs/quickstart.md）
+            if (/\.md(\?.*)?$/i.test(url.pathname)) return true;
+            // hash 路由形式（地址栏：docs.html#docs/quickstart.md）
+            if (/\.md(\?.*)?$/i.test(url.hash)) return true;
+            return false;
+        } catch (_) {
+            return /\.md(\?.*)?$/i.test(u);
+        }
+    }
+
+    /**
+     * 根据已渲染的 Markdown 正文，自动生成右侧锚点栏（TOC）
+     * 提取 h2[id] / h3[id]，复用 bny-anchor 组件实现滚动高亮
+     * @param {string} bodyHtml 渲染后的 Markdown HTML 片段
+     * @returns {string} <aside class="docs-anchor">…</aside>
+     */
+    function buildDocsAnchorRail(bodyHtml) {
+        var tmp = document.createElement('div');
+        tmp.innerHTML = bodyHtml;
+        var heads = tmp.querySelectorAll('h2[id], h3[id]');
+        if (!heads.length) return '';
+        var items = '';
+        Array.prototype.forEach.call(heads, function (h) {
+            var id = h.id;
+            var text = h.textContent;
+            var cls = (h.tagName.toLowerCase() === 'h3') ? 'link sub' : 'link';
+            items += '<div class="' + cls + '" anchor="#' + id + '">' + text + '</div>';
+        });
+        return '<aside class="docs-anchor">' +
+            '<p class="aside-title">本页锚点</p>' +
+            '<div hx-ext="bny-anchor" rail class="anchor-box">' + items + '</div>' +
+            '</aside>';
+    }
+
+    /**
+     * 渲染 Markdown 文档：调用 bny.markdown 转换为 HTML，
+     * 并自动包裹 .docs-main/.docs-anchor 外壳（Markdown 无法表达两栏布局）
+     * @param {string} mdText 原始 Markdown 文本
+     * @returns {string}
+     */
+    function renderDocsMarkdown(mdText, sourceUrl) {
+        var body;
+        var renderError = '';
+        if (typeof bny === 'undefined' || typeof bny.markdown !== 'function') {
+            renderError = '<div class="bny-alert" model="warning"><i class="bny-icon icon-info-circle"></i> Markdown 渲染器未加载，请检查网络或浏览器插件是否拦截了 <code>assets/ext/markdown.js</code>，然后按 Ctrl+F5 强制刷新。</div>';
+            body = '<pre style="white-space:pre-wrap;word-break:break-word;">' + (mdText ? escapeHtmlChars(mdText) : '') + '</pre>';
+            console.error('[bny-spa] bny.markdown 不可用，Markdown 文档无法渲染：', sourceUrl);
+        } else {
+            try {
+                body = bny.markdown(mdText, { linkTarget: '', headerIds: true, html: true });
+            } catch (e) {
+                renderError = '<div class="bny-alert" model="danger"><i class="bny-icon icon-close-circle"></i> Markdown 渲染失败：' + escapeHtmlChars(String(e && e.message || e)) + '</div>';
+                body = '<pre style="white-space:pre-wrap;word-break:break-word;">' + (mdText ? escapeHtmlChars(mdText) : '') + '</pre>';
+                console.error('[bny-spa] Markdown 渲染异常：', e);
+            }
+        }
+        var html = '<div class="docs-main"><article class="prose">' + renderError + body + '</article></div>';
+        html += buildDocsAnchorRail(body);
+        return html;
+    }
+
+    /**
+     * HTML 转义兜底（不依赖 bny.escapeChars）
+     */
+    function escapeHtmlChars(text) {
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function swapContent(html, fallbackUrl, viewPath, isMarkdown) {
+        // ===== Markdown 分支：跳过 DOMParser / syncHead（裸 MD 不能当 HTML 解析） =====
+        if (isMarkdown) {
+            viewPath = viewPath || [0];
+            var mdView = findViewByPath(document, viewPath)
+                || (viewPath.length > 1 ? findViewByPath(document, [0]) : null)
+                || document.querySelector('[bny-view]');
+            if (!mdView) { location.href = fallbackUrl; return; }
+            mdView.innerHTML = renderDocsMarkdown(html, _currentUrl);
+            executeScripts(mdView);
+            if (typeof htmx !== 'undefined' && htmx.process) { htmx.process(mdView); }
+            mdView.dispatchEvent(new CustomEvent('htmx:load', { bubbles: true, detail: { elt: mdView } }));
+            mdView.dispatchEvent(new CustomEvent('bny:spa:loaded', { bubbles: true, detail: { url: _currentUrl, viewPath: viewPath } }));
+            return;
+        }
+
         var doc = new DOMParser().parseFromString(html, 'text/html');
 
         // ===== 同步 head 信息（title / keywords / description） =====
@@ -824,7 +916,7 @@
             return res.text();
         })
         .then(function (html) {
-            swapContent(html, url, viewPath);
+            swapContent(html, url, viewPath, isMarkdownUrl(_currentUrl));
             // 恢复滚动位置
             var saved = _scrollCache[url];
             if (saved) {

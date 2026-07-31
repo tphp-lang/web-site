@@ -7,7 +7,7 @@
     <title>文档 · TinyPHP</title>
     <meta name="keywords" content="TinyPHP 文档,快速开始,语法特性,PHPC,多线程,扩展系统">
     <meta name="description" content="TinyPHP 官方文档：快速开始、语法特性、C 互操作 PHPC、内置函数、多线程、扩展系统、编译流水线。">
-    <!-- hash 路由：导航后地址栏为 docs.html#/docs/xxx.html，刷新不丢失框架 -->
+    <!-- hash 路由：导航后地址栏为 docs.html#/docs/xxx.md，刷新不丢失框架 -->
     <meta name="bny-spa-mode" content="hash">
     <link rel="icon" href="assets/img/TinyPHP.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="assets/img/TinyPHP.png">
@@ -24,16 +24,19 @@
     <link rel="stylesheet" href="assets/highlight/styles/atom-one-dark.min.css">
     <script src="assets/highlight/highlight.min.js"></script>
     <script src="assets/highlight/languages/javascript.min.js"></script>
+    <script src="assets/highlight/languages/bash.min.js"></script>
     <script src="assets/highlight/languages/php.min.js"></script>
     <script src="assets/highlight/languages/css.min.js"></script>
     <script src="assets/highlight/languages/xml.min.js"></script>
     <link rel="stylesheet" href="assets/bunny/bunny.css">
     <link rel="stylesheet" href="assets/css/theme.css?v=5">
     <script src="assets/bunny/bunny.js"></script>
+    <script src="assets/ext/markdown.js"></script>
     <link rel="stylesheet" href="assets/ext/spa.css">
-    <script src="assets/ext/spa.js?v=2"></script>
+    <link rel="stylesheet" href="assets/ext/markdown.css">
+    <script src="assets/ext/spa.js?v=5"></script>
     <link rel="stylesheet" href="assets/css/site.css?v=6">
-    <link rel="stylesheet" href="assets/css/docs.css?v=7">
+    <link rel="stylesheet" href="assets/css/docs.css?v=10">
 </head>
 
 <body hx-ext="bny-spa">
@@ -89,29 +92,49 @@
         <!-- 主体三栏 -->
         <section class="section section--tight">
             <div class="site-container">
+                <!-- 目录触发：桌面端为内联按钮，移动端为浮空按钮 -->
+                <div class="docs-toolbar">
+                    <button type="button" class="docs-menu-toggle" id="docs-menu-toggle"
+                            aria-label="打开文档目录" aria-expanded="false" aria-controls="docs-drawer">
+                        <svg class="docs-menu-toggle-icon" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                             stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <span class="docs-menu-toggle-text">目录</span>
+                    </button>
+                </div>
+
                 <div class="docs-layout">
-                    <!-- ========== 左侧菜单（固定，不参与子视口交换） ========== -->
-                    <aside class="docs-sidebar">
-                        <p class="aside-title">章节导航</p>
+                    <!-- ========== 左侧菜单（抽屉式弹出，不参与子视口交换） ========== -->
+                    <aside class="docs-sidebar docs-drawer" id="docs-drawer">
+                        <div class="docs-drawer-head">
+                            <span class="aside-title">章节导航</span>
+                            <button type="button" class="docs-drawer-close" id="docs-drawer-close"
+                                    aria-label="关闭目录">✕</button>
+                        </div>
                         <nav class="docs-menu">
-                            <a href="docs/quickstart.html" bny-view-target="#docs-view" class="active">快速开始</a>
-                            <a href="docs/syntax.html" bny-view-target="#docs-view">语法特性</a>
-                            <a href="docs/phpc.html" bny-view-target="#docs-view">C 互操作 PHPC</a>
-                            <a href="docs/builtins.html" bny-view-target="#docs-view">内置函数</a>
-                            <a href="docs/threads.html" bny-view-target="#docs-view">多线程</a>
-                            <a href="docs/extensions.html" bny-view-target="#docs-view">扩展系统</a>
-                            <a href="docs/pipeline.html" bny-view-target="#docs-view">编译流水线</a>
+                            <a href="docs/quickstart.md" bny-view-target="#docs-view" class="active">快速开始</a>
+                            <a href="docs/syntax.md" bny-view-target="#docs-view">语法特性</a>
+                            <a href="docs/phpc.md" bny-view-target="#docs-view">C 互操作 PHPC</a>
+                            <a href="docs/builtins.md" bny-view-target="#docs-view">内置函数</a>
+                            <a href="docs/threads.md" bny-view-target="#docs-view">多线程</a>
+                            <a href="docs/extensions.md" bny-view-target="#docs-view">扩展系统</a>
+                            <a href="docs/pipeline.md" bny-view-target="#docs-view">编译流水线</a>
                         </nav>
                     </aside>
 
                     <!-- ========== 子视口：中间内容 + 右侧锚点（仅此区域交换） ========== -->
-                    <div class="docs-content" bny-view id="docs-view" hx-get="docs/quickstart.html" hx-trigger="load">
+                    <div class="docs-content" bny-view id="docs-view">
                     </div>
                 </div>
             </div>
         </section>
 
     </main>
+
+    <!-- 抽屉遮罩（固定全屏，点击收起目录） -->
+    <div class="docs-backdrop" id="docs-backdrop"></div>
 
     <!-- ==================== 共享页脚 ==================== -->
     <footer class="site-footer">
@@ -161,7 +184,7 @@
         </div>
     </footer>
 
-    <script src="assets/js/site.js?v=10"></script>
+    <script src="assets/js/site.js?v=13"></script>
 </body>
 
 </html>

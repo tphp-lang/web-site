@@ -133,6 +133,58 @@
         });
     }
 
+    /* ---------- 文档页目录抽屉（弹出菜单） ---------- */
+    function initDocsDrawer() {
+        var toggle = document.getElementById('docs-menu-toggle');
+        var closeBtn = document.getElementById('docs-drawer-close');
+        var backdrop = document.getElementById('docs-backdrop');
+        if (!toggle || !backdrop) return;
+
+        function setOpen(open) {
+            document.body.classList.toggle('docs-menu-open', open);
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+        function openMenu() { setOpen(true); }
+        function closeMenu() { setOpen(false); }
+
+        // 元素级监听：用元素自身 flag 防重绑（DOM 重建后会换新元素）
+        if (!toggle._tphpDrawer) {
+            toggle._tphpDrawer = true;
+            toggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                setOpen(!document.body.classList.contains('docs-menu-open'));
+            });
+        }
+        if (closeBtn && !closeBtn._tphpDrawer) {
+            closeBtn._tphpDrawer = true;
+            closeBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                closeMenu();
+            });
+        }
+        if (!backdrop._tphpDrawer) {
+            backdrop._tphpDrawer = true;
+            backdrop.addEventListener('click', closeMenu);
+        }
+        var menu = document.querySelector('.docs-menu');
+        if (menu && !menu._tphpDrawer) {
+            menu._tphpDrawer = true;
+            menu.addEventListener('click', function (e) {
+                if (e.target.closest('.docs-menu a[href]')) closeMenu();
+            });
+        }
+
+        // 文档级监听：整个会话只绑一次
+        if (!document._tphpDrawerDoc) {
+            document._tphpDrawerDoc = true;
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && document.body.classList.contains('docs-menu-open')) closeMenu();
+            });
+            // SPA 内容交换（含深链进入/子页切换）后自动收起
+            document.addEventListener('bny:spa:loaded', function () { closeMenu(); });
+        }
+    }
+
     /* ---------- 文档页左侧菜单高亮 ---------- */
     // SPA 导航时事件在 pushState 前触发，hash 还是旧值，需从 evt.detail.url 取实际 URL
     function syncDocsSidebarActive(evt) {
@@ -149,7 +201,7 @@
         }
         // 回退：首次加载/刷新时从 hash 提取
         if (!currentPath) {
-            currentPath = 'docs/quickstart.html';
+            currentPath = 'docs/quickstart.md';
             if (location.hash && location.hash.length > 1 && location.hash.charAt(1) === '/') {
                 currentPath = location.hash.substring(1).replace(/^\//, '');
             }
@@ -157,8 +209,11 @@
 
         menu.querySelectorAll('a[href]').forEach(function (a) {
             var href = (a.getAttribute('href') || '').replace(/^\//, '');
-            // 用 endsWith 匹配，兼容子路径部署
-            if (href && currentPath.indexOf(href) === currentPath.length - href.length) a.classList.add('active');
+            // 精确匹配或在路径边界处结尾，兼容子路径部署；
+            // 不能用 indexOf(href)===len-href.length —— 当 href 非子串时 indexOf 为 -1，
+            // 若 href.length 恰比 currentPath 长 1 会误判为真（off-by-one）
+            var match = href && (currentPath === href || currentPath.endsWith('/' + href));
+            if (match) a.classList.add('active');
             else a.classList.remove('active');
         });
     }
@@ -172,6 +227,17 @@
     //   4. 用户在 docs 页面点击其他导航（如首页）→ 不应触发自动导航
     var _pendingDocsHash = '';  // 跨页面导航时暂存目标 hash
 
+    /**
+     * 判断 docs-view 是否已有真实内容（排除初始 loading 占位）
+     */
+    function docsViewHasContent(view) {
+        if (!view) return false;
+        if (view.children.length === 0) return false;
+        // 只有一个 loading 占位时不算有内容
+        if (view.children.length === 1 && view.querySelector('.docs-loading')) return false;
+        return true;
+    }
+
     function initDocsAutoNav(evt) {
         var docsView = document.getElementById('docs-view');
 
@@ -184,11 +250,11 @@
             // 只有导航到 docs.html 框架时，才需要自动加载子页面
             if (fileName !== 'docs.html') return;
             if (!docsView) return;
-            if (docsView.children.length > 0) return;
+            if (docsViewHasContent(docsView)) return;
             if (docsView.getAttribute('data-auto-nav')) return;
 
             // 确定目标子页面：优先用 _pendingDocsHash，最后默认 quickstart
-            var targetHref = _pendingDocsHash || 'docs/quickstart.html';
+            var targetHref = _pendingDocsHash || 'docs/quickstart.md';
             _pendingDocsHash = '';
 
             var link = document.querySelector('.docs-menu a[href="' + targetHref + '"]');
@@ -222,10 +288,10 @@
 
         // 场景 1/2：在 docs 框架，加载子页面
         if (!docsView) return;
-        if (docsView.children.length > 0) return;
+        if (docsViewHasContent(docsView)) return;
         if (docsView.getAttribute('data-auto-nav')) return;
 
-        var targetHref2 = 'docs/quickstart.html';
+        var targetHref2 = 'docs/quickstart.md';
         if (isDocsSubPage) {
             targetHref2 = hashPath;
         }
@@ -248,6 +314,7 @@
         syncDocsSidebarActive(evt);
         initModeBtn();
         initMobileNavAutoCollapse();
+        initDocsDrawer();
         triggerSpaFadeIn();
         highlightCode();
         // 文档子视口自动导航（根据 hash 恢复子页面）
