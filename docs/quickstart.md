@@ -1,6 +1,6 @@
 ## 快速开始 {#quickstart}
 
-TinyPHP 是一个 PHP → C AOT 编译器，用 PHP 8.5 强类型语法编写原生二进制，零运行时依赖，性能提升 300-500 倍。下载源码后即可通过 `tphp.php` 入口编译 PHP 文件为可执行二进制。
+TinyPHP 是一个 PHP → C AOT 编译器，用 PHP 8.5 强类型语法编写原生二进制，零运行时依赖，性能提升 300-500 倍。下载后即可通过 `tphp` 入口编译 PHP 文件为可执行二进制。
 
 ### 编译单文件 {#compile-single}
 
@@ -46,20 +46,11 @@ tphp .
 
 class Main
 {
-    // 构造函数 — 接收命令行参数（可选，默认可省略）
-    public function __construct(int $argc, array $argv)
-    {
-        // $argc — 参数个数，$argv — 参数数组
-    }
-
     // 入口函数 — 必须为 public function main(): void
     public function main(): void
     {
         echo "hello world\n";
     }
-
-    // 析构函数 — 程序退出前自动调用（可选）
-    public function __destruct() {}
 }
 ```
 
