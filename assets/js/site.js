@@ -1,6 +1,6 @@
 /* ============================================================
-   site.js — 主题切换 + 导航高亮同步 + 代码高亮（全局共享）
-   依赖 bunny-ui (htmx / bny) + highlight.js (hljs)
+   site.js — 主题切换 + 导航高亮同步（全局共享）
+   依赖 bunny-ui (htmx / bny)；代码高亮由 prismjs 负责（bny-code 组件）
    ============================================================ */
 (function () {
     'use strict';
@@ -55,13 +55,6 @@
         var m = mode || getStoredMode() || 'auto';
         var resolved = (m === 'auto') ? '（当前：' + MODE_LABEL[currentResolvedTheme()] + '）' : '';
         btn.setAttribute('title', MODE_LABEL[m] + resolved + ' — 点击切换');
-    }
-
-    /* ---------- 代码高亮 ---------- */
-    function highlightCode() {
-        if (window.hljs) {
-            try { hljs.highlightAll(); } catch (e) { /* ignore */ }
-        }
     }
 
     /* ---------- 导航高亮同步 ---------- */
@@ -313,7 +306,6 @@
         initMobileNavAutoCollapse();
         initDocsDrawer();
         triggerSpaFadeIn();
-        highlightCode();
         // 文档子视口自动导航（根据 hash 恢复子页面）
         initDocsAutoNav(evt);
     }

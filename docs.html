@@ -23,12 +23,8 @@
     </script>
     <link rel="stylesheet" href="assets/prismjs/prism.css">
     <script src="assets/prismjs/prism.js"></script>
-    <script src="assets/prismjs/components/prism-clike.min.js"></script>
+    <!-- 语言包：仅 bash/c 需额外加载（clike/css/javascript/markup/php 已内置 prism.js 核心） -->
     <script src="assets/prismjs/components/prism-bash.min.js"></script>
-    <script src="assets/prismjs/components/prism-php.min.js"></script>
-    <script src="assets/prismjs/components/prism-javascript.min.js"></script>
-    <script src="assets/prismjs/components/prism-markup.min.js"></script>
-    <script src="assets/prismjs/components/prism-css.min.js"></script>
     <script src="assets/prismjs/components/prism-c.min.js"></script>
     <link rel="stylesheet" href="assets/bunny/bunny.css">
     <link rel="stylesheet" href="assets/css/theme.css?v=5">
@@ -132,51 +128,8 @@
     </main>
 
 
-    <!-- ==================== 共享页脚 ==================== -->
-    <footer class="site-footer">
-        <div class="site-container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <div class="logo-line"><img src="assets/img/TinyPHP.png" alt="TinyPHP"><span>TinyPHP</span></div>
-                    <p>PHP → C AOT 编译器，用 PHP 语法编写原生二进制，零运行时依赖，性能提升 300-500 倍。</p>
-                    <div class="footer-social">
-                        <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP"
-                            target="_blank" rel="noopener noreferrer" bny-spa-skip title="GitHub"><i
-                                class="bny-icon icon-github-fill"></i></a>
-                        <a class="bny-btn" model="border circle" href="https://github.com/KingBes/TinyPHP/actions"
-                            target="_blank" rel="noopener noreferrer" bny-spa-skip title="CI 构建"><i
-                                class="bny-icon icon-carryout"></i></a>
-                        <a class="bny-btn" model="border circle"
-                            href="https://github.com/KingBes/TinyPHP/blob/main/LICENSE" target="_blank"
-                            rel="noopener noreferrer" bny-spa-skip title="MIT 许可证"><i
-                                class="bny-icon icon-idcard"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <div class="footer-col">
-                        <h4>导航</h4><a href="index.html">首页</a><a href="docs.html">文档</a><a
-                            href="ecosystem.html">生态</a><a href="about.html">关于我们</a>
-                    </div>
-                    <div class="footer-col">
-                        <h4>资源</h4><a href="https://github.com/KingBes/TinyPHP" target="_blank"
-                            rel="noopener noreferrer" bny-spa-skip>GitHub 仓库</a><a href="https://github.com/KingBes/TinyPHP/blob/main/FUNCTIONS.md"
-                            target="_blank" rel="noopener noreferrer" bny-spa-skip>函数列表</a><a
-                            href="https://github.com/KingBes/TinyPHP/blob/main/BENCHMARK_RESULTS.md" target="_blank"
-                            rel="noopener noreferrer" bny-spa-skip>基准测试</a>
-                    </div>
-                    <div class="footer-col">
-                        <h4>关联项目</h4><a href="https://github.com/workbunny/bunny.ui" target="_blank"
-                            rel="noopener noreferrer" bny-spa-skip>BunnyUI</a><a href="ecosystem.html">扩展库</a><a
-                            href="ecosystem.html">工具链</a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <span>© 2026 TinyPHP · MIT Licensed</span>
-                <span><i class="bny-icon icon-code"></i> 由 BunnyUI 强力驱动</span>
-            </div>
-        </div>
-    </footer>
+    <!-- ==================== 共享页脚（htmx 注入，唯一数据源 public/footer.html） ==================== -->
+    <footer class="site-footer" hx-get="public/footer.html" hx-trigger="load"></footer>
 
     <script src="assets/js/site.js?v=14"></script>
 </body>

@@ -384,17 +384,3 @@
 @media (max-width: 640px) {
     .links-matrix { grid-template-columns: 1fr; }
 }
-
-/* ---------- 标签云 ---------- */
-.tag-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.tag-cloud .bny-tag {
-    margin-left: 0;
-    font-size: var(--font-size);
-    padding: 6px 14px;
-    height: auto;
-}
