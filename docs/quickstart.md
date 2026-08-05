@@ -60,7 +60,6 @@ tphp main.php
 | `tphp test/var/var.php` | 编译单文件，产物为同目录同名二进制 |
 | `tphp main.php demo.php` | 多文件按入口顺序合并编译，被依赖文件需显式列出 |
 | `tphp .` | 编译整个当前目录的 php 文件（`.` 表示当前目录） |
-| `tphp main.php my_func.c` | **PHP + C 混编**，`.c` 文件一并编译链接 |
 | `tphp main.php --debug` | 编译 + 运行 + 比对 `#debug` 预期输出 |
 | `tphp main.php -cc gcc` | 指定外部编译器（gcc/clang）替代内置 TCC |
 
@@ -123,29 +122,41 @@ tphp test.php --debug   # [YES] 逐行比对通过
 
 ### 调用 C 函数（PHPC） {#call-c-demo}
 
-写一个 `my_func.c` 混编即可直接调用：
+写一个 C 源文件 `my_func.c` 与头文件 `my_func.h`，在 PHP 中用 `#include` 引头文件、`#flag` 声明源文件：
+
+```c
+// my_func.h
+int my_add(int a, int b);
+```
 
 ```c
 // my_func.c
-#include <stdio.h>
+#include "my_func.h"
 int my_add(int a, int b) { return a + b; }
 ```
 
 ```php
 <?php
+#include __DIR__ . "/my_func.h"    // 引入 C 头文件
+#flag __DIR__ . "/my_func.c"       // 声明 C 源文件，自动加入编译
+
+#debug int(30)
+
 class Main {
     public function main(): void {
         // C-> 调用返回值赋给变量时必须显式声明类型（AOT 类型安全）
         int $r = C->my_add(c_int(10), c_int(20));
-        var_dump($r);   // int(30)
+        var_dump($r);
     }
 }
 ```
 
 ```bash
-tphp main.php my_func.c --debug
+tphp main.php --debug
 # [YES] int(30)
 ```
+
+> `#include` 只用于引入 C 头文件；`.c` 源文件统一由 `#flag` 指令声明（如 `#flag __DIR__ . "/my_func.c"`），编译器自动加入编译列表。
 
 > 完整 C 类型注解（`C.int`/`C.void*`/`C.Point*`）、数组/对象/回调互操作与安全 API 见 [C 互操作 PHPC](phpc.md)。
 

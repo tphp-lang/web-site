@@ -231,19 +231,30 @@ class Main {
 
 > ⚠️ `C->func()` 段错误**不可恢复**，仍会导致进程崩溃。C 函数返回 NULL/错误码时需调用方手动检查，无统一约定。
 
-### 完整混编示例 {#full-example}
+### 完整示例 {#full-example}
+
+自定义 C 库需要两个文件：头文件 `my_lib.h`（`#include` 引入声明）与源文件 `my_lib.c`（`#flag` 声明，自动加入编译）：
 
 ```c
-// my_lib.c
-#include <stdlib.h>
+// my_lib.h —— #include 引入头文件
 typedef struct { double x, y; } Point;
+Point* point_create(double x, double y);
+double point_get_x(Point* p);
+void point_free(Point* p);
+```
+
+```c
+// my_lib.c —— 命令行传入，一并编译链接
+#include "my_lib.h"
+#include <stdlib.h>
 Point* point_create(double x, double y) { Point* p = malloc(sizeof(Point)); p->x = x; p->y = y; return p; }
 double point_get_x(Point* p) { return p->x; }
 void point_free(Point* p) { free(p); }
 ```
 
 ```php
-#include __DIR__ . "/my_lib.c"
+#include __DIR__ . "/my_lib.h"   // #include 只引头文件
+#flag __DIR__ . "/my_lib.c"      // #flag 声明 C 源文件，自动加入编译
 
 class Main {
     public function main(): void {

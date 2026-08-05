@@ -30,7 +30,7 @@
 4. **C 运行时**（`include/`）— COS 风格对象系统（16B 对象头）、setjmp/longjmp 异常、ROPE 字符串拼接、128 槽数组/对象复用池、128KB 字符串池（bump allocator）；`compat.h` 统一 TCC/GCC/Clang/MSVC 差异
 5. **编译器** — 内置 TCC（mob 分支，**亚秒级编译**），支持 GCC / Clang（`-cc gcc`，`-O2` 可再快 3-10x）
 
-> 所有源文件合并为单入口编译；`#include` 的 `.c` 文件与 `#flag` 中列出的 `.c` 自动加入编译列表。
+> 所有源文件合并为单入口编译；`#flag` 指令中声明的 `.c` 源文件自动加入编译列表（`#include` 只引入头文件）。
 
 ### CLI 选项 {#cli}
 
