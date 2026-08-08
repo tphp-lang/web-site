@@ -22,14 +22,6 @@
     <span class="bny-tag" color="green">二进制</span>
 </div>
 
-### 阶段说明 {#stages}
-
-1. **Lexer**（`src/Lexer.php`）— 逐字符扫描，约 75 种 Token，支持字符串插值 / heredoc / nowdoc
-2. **Parser**（`src/Parser.php`）— 递归下降，完整 15 级运算符优先级，输出 AST
-3. **CodeGenerator**（`src/CodeGenerator.php`）— 访问者模式，生成类型安全的 C 代码；可选 `--ssa` 启用 SSA 优化中间表示
-4. **C 运行时**（`include/`）— COS 风格对象系统（16B 对象头）、setjmp/longjmp 异常、ROPE 字符串拼接、128 槽数组/对象复用池、128KB 字符串池（bump allocator）；`compat.h` 统一 TCC/GCC/Clang/MSVC 差异
-5. **编译器** — 内置 TCC（mob 分支，**亚秒级编译**），支持 GCC / Clang（`-cc gcc`，`-O2` 可再快 3-10x）
-
 > 所有源文件合并为单入口编译；`#flag` 指令中声明的 `.c` 源文件自动加入编译列表（`#include` 只引入头文件）。
 
 ### CLI 选项 {#cli}
@@ -43,10 +35,9 @@
 | `-shared` | 编译为动态库（配合 `#[Export]` 注解，见下） |
 | `--no-android-apk` | Android 模式仅编译 .so，跳过 APK 打包 |
 | `--debug` | 编译 + 运行 + 比对 `#debug` 预期输出 |
-| `--ssa` | 启用 SSA 优化中间表示 |
 | `-h / --help` / `-v / --version` | 帮助 / 版本 |
 
-> 长参数形式 `--os=linux`、`--arch=x86_64` 亦可。Android 交叉编译需 `ANDROID_NDK` 环境变量（详见 [快速开始](quickstart.md)）。
+> 长参数形式 `--os=linux`、`--arch=x86_64` 亦可。Android 交叉编译需 `ANDROID_NDK` 环境变量（详见 [快速开始](docs/quickstart.md)）。
 
 ### PHAR 分发 {#phar}
 
@@ -65,17 +56,6 @@
 | Android（4 ABI） | — | ✅ NDK Clang | ✅ | `-os android` → APK / `libtphp.so` |
 
 Android ABI：`aarch64`(arm64-v8a) / `x86_64` / `armv7a`(armeabi-v7a) / `i686`(x86)；默认编译全部 4 种，`-arch` 指定单一 ABI。
-
-### 内存优化 {#memory}
-
-| 机制 | 说明 |
-|------|------|
-| SSO 小字符串 | 24B 内联缓冲区，≤23 字节零堆分配 |
-| 128KB 字符串池 | bump allocator + Arena，O(1) 分配；≤512B 字符串从池分配，零 `malloc` |
-| 128 槽数组/对象复用池 | LIFO + 1.5× 增长，`new`+`unset` 命中率 36-52%，热路径零 malloc |
-| ROPE 多片段拼接 | 3+ 片段 `.` 链编译期展平为单次分配，concat-4 快 6x |
-| Thread-Local 运行时 | 每线程独立内存池，无锁竞争 |
-| `array<T>` 紧凑存储 | `array<int>` 8B/元素 vs `array<mixed>` 24B，省 67% 内存 |
 
 ### 动态库导出 #[Export] {#export}
 
@@ -97,7 +77,6 @@ tphp foo.php -shared -o foo.dylib   # macOS
 | 适用对象 | 仅独立函数（用于方法报语法错误） |
 | 类型约束 | 参数/返回值允许 int/float/bool/string/void/`C.Type`；**禁止 `array`** |
 | string 映射 | 直接暴露 `t_string*`（C 侧需包含 `tphp_runtime.h`） |
-| 生成机制 | `TPHP_EXPORT` 宏（Win `__declspec(dllexport)` / GCC visibility）+ 运行时自动初始化（`DllMain` / constructor） |
 | 非 `-shared` 模式 | 静默忽略，函数正常调用 |
 
 > `#[Export]` 与注解系统独立，可与 `#[ROUTE(...)]` 等用户注解共存于同一函数。

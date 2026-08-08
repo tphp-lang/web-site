@@ -4,6 +4,24 @@
 > 脚本标签 `<?php ?>` 可选，无游离代码（文件顶层只能放声明与指令）。<br>
 > 注释 `//` `/* */` 支持；`#` 开头是编译指令（`#debug`/`#include`/`#import`/`#if`），不是注释。
 
+### 本语言速览 {#overview}
+
+tphp（TinyPHP）是基于 PHP 8.5 强类型语法的 AOT 编译语言，围绕五大支柱展开：**控制流**（`if`/`switch`/`match`/循环）、**OOP**（类/继承/Trait/Enum/匿名类）、**闭包**（`fn` 箭头函数与 `function` 闭包）、**异常**（`try/catch/finally` + `throw`/`error()`）、**命名空间**（`namespace` + `use` 导入）。下面这段最小示例一次性展示这五大支柱：
+
+```php
+namespace App;                          // 命名空间
+class Greeter {                         // OOP
+    public function __construct(public string $name) {}
+    public function say(): void {       // 控制流 + 异常
+        if ($this->name === "") { error("empty"); }
+        echo "hi " . $this->name;
+    }
+}
+$g = fn(Greeter $g): void => $g->say(); // 闭包
+```
+
+下面各小节是语法速查参考；控制流、函数、OOP、异常的**完整教程**（含示例与限制说明）已拆分为独立专题页，请配合阅读：[控制流](docs/control-flow.md)、[函数与闭包](docs/functions.md)、[面向对象](docs/oop.md)、[异常与错误](docs/exceptions.md)。
+
 ### 基本语法 {#basic-syntax}
 
 php 文件默认拓展名是 `.php`，不能含有 HTML 标签和游离代码。每个程序需要一个 **`Main` 类**与 `main()` 入口方法：
@@ -51,20 +69,20 @@ class C {
 }
 ```
 
-| PHP 类型 | C 类型 | 说明 |
-|----------|--------|------|
-| `int` | `int64_t` | 64 位有符号整数 |
-| `float` | `double` | IEEE 754 双精度 |
-| `string` | `t_string` | SSO ≤23 字节内联，超限走池 |
-| `bool` | `bool` | true/false |
-| `array` | `t_array*` | 有序映射，int/string 键 |
-| `array<T>` | `t_array*` | 泛型数组，元素类型编译期已知 |
-| `callable` | `t_callback` | 闭包/C 函数指针 |
-| `mixed` | `t_var` | 标签联合体，有运行时开销 |
-| `void` / `never` | `void` | 无返回值 / 永不返回 |
-| 类类型 | `tphp_class_X*` | COS 对象指针 |
+| 类型 | 说明 |
+|------|------|
+| `int` | 64 位有符号整数 |
+| `float` | IEEE 754 双精度 |
+| `string` | 字符串 |
+| `bool` | true/false |
+| `array` | 有序映射，int/string 键 |
+| `array<T>` | 泛型数组，元素类型固定 |
+| `callable` | 闭包 |
+| `mixed` | 可变类型，有运行时开销 |
+| `void` / `never` | 无返回值 / 永不返回 |
+| 类类型 | 对象引用 |
 
-**`array<T>` 泛型**：六种单态化存储（int 8B / string 24B / float 8B / bool 1B / mixed 24B / ptr 8B），`array<int>` 比 `array<mixed>` **省 67% 内存**。无注解 `$arr = [1,2,3]` 默认推导 `array<mixed>`；显式声明后 push 不同类型报编译错误；传给 `array<mixed>` 参数自动 O(n) 协变转换。
+**`array<T>` 泛型**：`array<int>` 比 `array<mixed>` **省 67% 内存**。无注解 `$arr = [1,2,3]` 默认推导 `array<mixed>`；显式声明后 push 不同类型报编译错误；传给 `array<mixed>` 参数会自动转换。
 
 ### 完全兼容特性 {#supported}
 
@@ -72,7 +90,7 @@ class C {
 |------|------|
 | 控制流 | `if/elseif/else`、`while`、`do-while`、`for`、`foreach`、`switch`（含字符串 switch、fall-through）、`match`、`break N`、`continue N`、`goto` |
 | OOP | `class`、`extends`、`interface`、`implements`、`trait+use`、`abstract class`、`final class`、`readonly`、`enum`（int/string backing）、`__construct(public $x)` 属性提升、`__destruct`、`instanceof`、`self::`/`parent::`、链式调用、`?->` |
-| Property Hook | `public string $x { get => ...; set => ...; }`（PHP 8.4，编译为 getter/setter） |
+| Property Hook | `public string $x { get => ...; set => ...; }`（PHP 8.4） |
 | 闭包 | `function() use($x) {}`、`fn($x): T => expr`、`fn($x): T => { stmts }`（块体）、嵌套闭包、多捕获 |
 | 异常 | `try/catch(Exception $e)/finally`、`throw new Exception()`、`throw` 表达式、`error($msg)` |
 | 运算符 | 完整 15 级优先级：算术/比较/逻辑/位/三元 `?:`/空合并 `??`/太空船 `<=>`/自增自减/类型转换/管道 `\|>` |
@@ -90,65 +108,45 @@ class C {
 | `abstract` 方法 | ⚠️ 部分支持 | 语法接受但不强制子类实现（无编译/运行期检查） |
 | `readonly` | ✅ 已实现 | 支持单属性与 `readonly class`（全部属性自动 readonly）；仅可在本类 `__construct` 赋值一次；不支持默认值；不支持 `static readonly` |
 
+### 匿名类 {#anon-class}
+
+`new class [(args)] [extends Parent] [implements Iface] { members }` 声明匿名类，与普通类行为完全等价；不支持 `use()` 捕获语法与通过接口类型变量分派。完整语法与限制详见 [面向对象 · 匿名类](docs/oop.md#anon-class)。
+
+### Trait 与冲突解决 {#trait}
+
+Trait 引入到使用类后与类自身成员等价，无额外运行时开销；多 trait 同名方法必须用 `insteadof` / `as` 显式解决冲突，否则编译报错；类自身成员优先于 trait 成员。冲突解决规则、可见性改写与不支持项详见 [面向对象 · Trait](docs/oop.md#trait)。
+
 ### 控制流与异常 {#control-flow}
 
-```php
-function divide(int $a, int $b): int|Exception {   // 含 throw 必须声明 |Exception
-    if ($b === 0) {
-        throw new Exception("div by zero");
-    }
-    return intdiv($a, $b);
-}
-
-class Main {
-    public function main(): void {
-        switch ($cmd) {          // 支持 fall-through
-            case "start": echo "run"; break;
-            case "stop": echo "halt"; break;
-        }
-        $r = match ($x) { 1 => "one", 2 => "two", default => "?" };
-        error("直接抛出可捕获异常");   // 等价 throw new Exception($msg)
-    }
-}
-```
-
-> `Type\|Exception` 是 TinyPHP 扩展语法：函数体含 `throw`/`error()` 时**必须**在返回类型声明 `\|Exception`（纯文档提示，C 仅生成 `\|` 前类型，零开销）。普通联合类型（`int|string`）映射 `t_var`，不支持。
+tphp 支持完整控制流（`if/elseif/else`、`while/do-while/for/foreach`、`switch`（含 fall-through）、`match`、`break/continue N`、`goto`）与异常机制（`try/catch/finally`、`throw`、`error()` 简写）。函数体含 `throw`/`error()` 时须在返回类型声明 `|Exception`（TinyPHP 扩展，纯文档提示）；普通联合类型 `int|string` 不支持。完整教程见 [控制流](docs/control-flow.md) 与 [异常与错误](docs/exceptions.md)。
 
 ### 闭包与 Generator {#closure-generator}
 
-```php
-function gen(): Generator {                  // 顶层函数声明（minicoro stackless 协程）
-    yield 1;
-    yield "k" => "v";
-    return 42;
-}
+闭包支持 `function() use($x) {}`、单表达式 `fn($x): T => expr` 与块体 `fn($x): T => { stmts }`（须以 `return` 结尾）；Generator 支持 `yield $k => $v`、`send()` 双向传值、`getReturn()`，不使用 `yield` 时零开销。完整教程见 [函数与闭包](docs/functions.md)。
 
-class Main {
-    public function main(): void {
-        $fn = fn(int $x): int => $x * 2;             // 单表达式
-        $blk = fn(int $x): int => { $y = $x + 1; return $y; };  // 块体（须以 return 结尾）
-        foreach (gen() as $v) { var_dump($v); }
-    }
-}
-```
+### 函数与可变参数 {#variadic}
 
-Generator 支持 `yield $k => $v`、`send()` 双向传值、`getReturn()`、`foreach` 迭代；不使用 `yield` 时零开销。
+默认值参数（`int $x = 10`）须置于参数列表末尾；可变参数 `...$args` 在函数内作为数组使用，`f(...$arr)` 透传无需额外拷贝。`func_get_args()` 仅可在变参函数内使用。完整教程见 [函数与闭包](docs/functions.md)。
 
 ### TinyPHP 独有特性 {#unique}
 
 | 语法 | 说明 |
 |------|------|
-| `defer EXPR;` / `defer { ... }` | Zig 风格作用域清理：编译期展开到所有 return/fall-through 路径，LIFO 执行，**零运行时开销** |
+| `defer EXPR;` / `defer { ... }` | Zig 风格作用域清理：作用域结束时 LIFO 执行 |
 | `#if / #elseif / #else / #endif` | 条件编译：解析期求值，非命中分支跳过。条件支持 `Windows`/`Linux`/`Darwin`/`Android`/`TCC`/`GCC`/`Clang`/`x86_64`/`aarch64`/`debug`/`prod` 标识符 + `!`/`&&`/`\|\|` |
-| 注解系统 | `#[Attribute(path: string)] const ROUTE = [];` 声明 + `#[ROUTE("/x")]` 使用，`ROUTE[0]->call()/newInstance()` 编译期展开为零开销直接调用 |
+| 注解系统 | `#[Attribute(path: string)] const ROUTE = [];` 声明 + `#[ROUTE("/x")]` 使用，`ROUTE[0]->call()/newInstance()` 调用目标 |
 | `Type\|Exception` 返回类型 | 见「控制流与异常」 |
 | `error($msg)` | `throw new Exception($msg)` 简写 |
 | 块体箭头函数 | `fn(): T => { stmts }`（PHP 原生仅单表达式） |
 | `#cstruct Name { C.type field; }` | 声明 C 结构体字段布局，`$p->field` 原生访问 |
-| `#callback` / `#include` / `#flag` / `#import` | 见 [C 互操作 PHPC](phpc.md) 与 [扩展系统](extensions.md) |
+| `#callback` / `#include` / `#flag` / `#import` | 见 [C 互操作 PHPC](docs/phpc.md) 与 [扩展系统](docs/extensions.md) |
 | C 指针泄漏编译期提醒 | transfer 指针未 `defer`/`free` 时输出 `[WARN]`（不阻断编译） |
 
-注解系统示例：
+### 注解系统 {#annotations}
+
+注解明确**不支持运行时反射**，仅支持**位置参数**（与全局命名参数禁用一致）。
+
+**声明**（附着于全局/命名空间 `const`，必须为空数组 `[]`）+ **使用**（附着于 class/method/function，可连续多个 `#[...]`）：
 
 ```php
 #[Attribute(path: string)]
@@ -160,15 +158,36 @@ class Main {
 
     public function main(): void {
         var_dump(ROUTE[0]->name);    // "Main->test"
+        var_dump(ROUTE[0]->type);    // "method"
         var_dump(ROUTE[0]->data);    // ["/test"]
-        ROUTE[0]->call();            // 编译期展开为直接调用，零开销
+        ROUTE[0]->call();            // 调用目标方法
+        $demo = ROUTE[1]->newInstance("x");  // 实例化目标类
     }
+}
+
+#[ROUTE("/Demo")]
+class Demo {
+    public function __construct(string $name) {}
 }
 ```
 
+每个注解使用提供一个可访问的实例：
+
+| 属性 / 方法 | 类型 / 签名 | 说明 |
+|------------|------------|------|
+| `$data` | `array` | 位置参数数组 |
+| `$type` | `string` | 目标类型：`method` / `static_method` / `class` / `function` |
+| `$name` | `string` | 限定名：`Ns\Class->method` / `Ns\Class::staticMethod` / `Ns\func` / `Ns\Class` |
+| `call(...$args): T` | 方法 | 调用目标方法/静态方法/函数（class 目标报错） |
+| `newInstance(...$args): ClassType` | 方法 | 实例化目标类（非 class 目标报错） |
+
+> **索引规则**：静态索引 `ROUTE[N]` 的 N 必须为编译期整数常量且在有效范围内；`foreach` 变量 `$v` 用于遍历所有注解。**跨命名空间匹配**与普通常量作用域一致：短名匹配（同命名空间 + 全局回退），`use const` 导入或 FQ 名（含 `\`）精确匹配。
+>
+> **校验**：参数数量须在声明参数 `[required, total]` 范围内（支持默认值）；命名参数 `#[ROUTE(path: "/x")]` 报语法错误，应用 `#[ROUTE("/x")]`；注解不继承父类，仅作用于 class/method/function（不支持属性/参数）。
+
 ### tphp 不支持 {#unsupported}
 
-（AOT 物理不可行）
+（AOT 不可行）
 
 | 特性 | 原因 | 代替方案 |
 | ---- | ---- | ---- |
@@ -181,7 +200,7 @@ class Main {
 | 动态属性 `$obj->x = 1` | 类布局编译期固定 | 预先声明属性 |
 | `Reflection*` 全系列 | 运行时内省 | 注解系统（编译期消费） |
 | `$GLOBALS` / `compact()` / `extract()` / `get_defined_vars()` | 无运行时符号表 | 显式传参 / `use` 闭包 |
-| `func_get_args()`（定参函数） | 参数固化为 C 形参 | 可变参数 `...$args`（该场景下已支持） |
+| `func_get_args()`（定参函数） | 定参函数参数已固定 | 可变参数 `...$args`（该场景下已支持） |
 | `ArrayAccess` / `Iterator` / `Stringable` 接口语义 | 需运行时动态分发 | `implements` 仅记录，不生效 |
 | `debug_backtrace()` | 运行时栈帧 | — |
 

@@ -1,6 +1,6 @@
 ## 快速开始 {#quickstart}
 
-TinyPHP 是一个 PHP → C AOT 编译器，用 PHP 8.5 强类型语法编写原生二进制。**无 Zend VM、无 OPCache、零运行时依赖**——生成纯 C 代码，由 GCC/Clang/TCC 编译为原生可执行文件，目标机器无需任何 PHP 环境。
+本页是动手实操指南——安装、编译、跑起第一个程序。如果还不了解 tphp 是什么、为什么用它，先读 [认识 tphp](docs/intro.md)。
 
 性能宣传语「提升 300-500 倍」是整体量级口径；[BENCHMARK_RESULTS.md](https://github.com/KingBes/TinyPHP/blob/main/BENCHMARK_RESULTS.md) 的实测数据（GCC -O2 下）：`foreach` 快 **26.6x**、`count+for` 快 **34-36.8x**、int 键读取快 **18.2x**、嵌套数组读 **22.9x**、方法调用接近 **0ns**。注意 TCC 默认编译（未优化）下 `create`/`array_push`/`array_merge` 仍慢于 PHP，追求性能请用 `-cc gcc`。
 
@@ -89,7 +89,6 @@ use MyApp\Models\User;
     <li><span class="bny-tag" color="yellow">-shared</span> <span>编译为动态库（配合 #[Export] 注解）</span></li>
     <li><span class="bny-tag" color="yellow">--no-android-apk</span> <span>Android 模式仅编译 .so，跳过 APK 打包</span></li>
     <li><span class="bny-tag" color="red">--debug</span> <span>编译运行并比对 <code>#debug</code> 预期输出</span></li>
-    <li><span class="bny-tag">--ssa</span> <span>启用 SSA 优化中间表示</span></li>
     <li><span class="bny-tag">-h / --help</span> <span>显示帮助；<code>-v / --version</code> 显示版本</span></li>
 </ul>
 
@@ -158,11 +157,11 @@ tphp main.php --debug
 
 > `#include` 只用于引入 C 头文件；`.c` 源文件统一由 `#flag` 指令声明（如 `#flag __DIR__ . "/my_func.c"`），编译器自动加入编译列表。
 
-> 完整 C 类型注解（`C.int`/`C.void*`/`C.Point*`）、数组/对象/回调互操作与安全 API 见 [C 互操作 PHPC](phpc.md)。
+> 完整 C 类型注解（`C.int`/`C.void*`/`C.Point*`）、数组/对象/回调互操作与安全 API 见 [C 互操作 PHPC](docs/phpc.md)。
 
 ### 多线程 {#threads-demo}
 
-内置 `Thread`/`Mutex`/`CondVar`/`WaitGroup` 四类线程原语，基于 tinycthread，Thread-Local 运行时无锁竞争：
+内置 `Thread`/`Mutex`/`CondVar`/`WaitGroup` 四类线程原语：
 
 ```php
 <?php
@@ -188,7 +187,7 @@ class Main {
 
 ### 异步与协程 {#async-demo}
 
-`Channel`/`Future`/`chan_select` 提供 CSP 风格异步通信（基于 mutex + condvar，push/pop 阻塞前自旋 750 次减少 syscall，Channel 环形缓冲区零 malloc）：
+`Channel`/`Future`/`chan_select` 提供 CSP 风格异步通信：
 
 ```php
 <?php
@@ -219,7 +218,7 @@ class Main {
 }
 ```
 
-> 详细 API 见 [多线程与异步](threads.md)。
+> 详细 API 见 [多线程与异步](docs/threads.md)。
 
 ### Android 构建 {#android}
 
@@ -231,18 +230,9 @@ tphp test/ui/ui_basic.php -os android -arch x86_64   # 仅模拟器 ABI（加速
 
 ### 常见问题 {#faq}
 
-**Q: 编译报 `macro used with too many args`？**
-
-A: 宏参数含逗号（如 `VAR_STRING((t_string){a,b})`）被预处理器误拆分。改用临时变量：
-
-```c
-t_string _tmp = {a, (int)strlen(a)};
-VAR_STRING(_tmp);  // OK
-```
-
 **Q: TCC 编译通过但 GCC/Clang 报错？**
 
-A: 差异由 `compat.h` 处理，但 TCC 不报隐式声明而 GCC/Clang 会。发布前用 `-cc gcc` 或 `-cc clang` 额外验证一遍。
+A: TCC 不报隐式声明而 GCC/Clang 会。发布前用 `-cc gcc` 或 `-cc clang` 额外验证一遍。
 
 **Q: 返回值赋给变量为什么要写类型？**
 

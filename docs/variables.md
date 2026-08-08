@@ -8,6 +8,18 @@ PHP 变量规则：
 - 变量名不能包含空格
 - 变量名是区分大小写的（$y 和 $Y 是两个不同的变量）
 
+### 什么是变量 {#what-is-variable}
+
+变量是存放数据的命名容器。你可以把它想象成一个贴了标签的盒子：盒子里的东西就是变量的"值"，标签上的名字就是变量名。在 tphp 里，变量名以 `$` 符号开头，比如 `$count`、`$name`、`$user_age`——`$` 就像盒子标签上的前缀，告诉编译器"这是一个变量"。给变量赋值就是把东西放进盒子，读取变量就是把盒子里的东西取出来用。
+
+### 变量为什么有类型 {#why-types}
+
+光知道盒子里有东西还不够，编译器还需要知道盒子里装的是整数、文本还是别的——这就是"类型"。类型告诉编译器该用什么方式存储、读取和操作这个值，从而生成高效的原生代码。tphp 是 AOT 编译（提前把 PHP 编译成 C 再编译成机器码），所有类型必须在**编译期**就确定下来，所以每个变量都有一个固定类型。
+
+### tphp 的类型固定意味着什么 {#type-fixing-meaning}
+
+"类型固定"指的是：变量在**首次赋值**时确定类型，之后不能再改成其他类型。比如 `$x = 10` 之后，`$x` 就一直是 `int`，再写 `$x = "hi"` 会在编译阶段报错。这是 tphp 与传统 PHP 最大的区别，也是性能的来源——既然类型在编译期已经定死，编译器就无需在运行时反复检查类型，可以直接生成最优化的机器码。
+
 ### 类型推导与固定 {#type-inference}
 
 **AOT 类型固定**：变量在首次赋值时确定类型，**后续不可变**。尝试切换类型（如 `$x` 先 `int` 后 `string`）会在 C 编译阶段报错。因此 `===` 与 `==` 等价——编译期已知类型，不存在"同时类型不同"的情况。
@@ -91,9 +103,32 @@ function increment(int &$x): void {
 }
 ```
 
+### 静态局部变量 {#static-local}
+
+`static` 关键字声明函数级持久的局部变量，首次进入函数时初始化，之后跨调用保留值。类型与初始值均**可选**：
+
+```php
+function counter(): int {
+    static $count = 0;        // 类型可选，初始值可选（默认零值）
+    static int $limit = 100;  // 带类型标记
+    $count++;
+    return $count;
+}
+
+class Main {
+    public function main(): void {
+        echo counter();   // 1
+        echo counter();   // 2
+        echo counter();   // 3
+    }
+}
+```
+
+> `static` 局部变量为函数级持久存储，仅初始化一次。注意：`static` 修饰**类属性**时标志当前会丢失（编译为实例属性），仅 `static` 局部变量与内置类（Thread/Parallel/Enum）支持真静态语义。
+
 ### tphp 数组 {#tphp-arrays}
 
-tphp 数组是 `t_array*`（128 槽 LIFO 复用池 + 1.5× 增长 + str/int 键双哈希索引，≥8 键 O(1) 查找），支持**泛型 `array<T>`**：
+tphp 数组是有序映射，支持 str/int 键 O(1) 查找，支持**泛型 `array<T>`**：
 
 ```php
 class Main {
@@ -103,25 +138,25 @@ class Main {
 
         // 声明类型数组 → 紧凑存储，省 67% 内存
         array<int> $arr2 = [1, 2, 3];        // 8B/元素
-        array<string> $arr3 = ["a", "b", "c"];  // 24B/元素 (SSO 内联)
+        array<string> $arr3 = ["a", "b", "c"];  // 24B/元素
         array<Foo> $arr4 = [new Foo(), new Foo()];  // 8B/元素（指针）
     }
 }
 ```
 
-| 元素类型 | C 结构 | value 大小 |
-|---------|--------|-----------|
-| `int` | `t_arr_int` | 8 字节 |
-| `string` | `t_arr_str` | 24 字节（SSO 内联） |
-| `float` | `t_arr_float` | 8 字节 |
-| `bool` | `t_arr_bool` | 1 字节 |
-| `mixed` | `t_arr_var` | 24 字节（tagged union） |
-| `array<U>` / `Foo` | `t_arr_ptr` | 8 字节（指针） |
+| 元素类型 | value 大小 |
+|---------|-----------|
+| `int` | 8 字节 |
+| `string` | 24 字节 |
+| `float` | 8 字节 |
+| `bool` | 1 字节 |
+| `mixed` | 24 字节 |
+| `array<U>` / `Foo` | 8 字节（指针） |
 
 **默认推导规则**：
 
 - 无注解 `$arr = [1, 2, 3]` → `array<mixed>`（保持 PHP 动态语义）
-- 显式声明 `array<int> $arr = [1, 2, 3]` → `array<int>`（触发紧凑存储优化）
+- 显式声明 `array<int> $arr = [1, 2, 3]` → `array<int>`（紧凑存储，省 67% 内存）
 - 空数组 `$arr = []` → `array<mixed>`；`array<int> $arr = []` → `array<int>`
 
 **类型严格性**：显式声明 `array<T>` 后，push 不同类型触发**编译错误**：
@@ -137,7 +172,7 @@ class Main {
 
 需用 `array<mixed>` 表达异构意图。相关内置函数限制：`array_push/pop/shift/unshift` 与 `asort/ksort/uasort/usort` 对 `array<T>` 拒绝，用 `$arr[] = $v` 或 `sort()` 替代。
 
-**协变转换**：`array<T>` 传给 `array<mixed>` 参数时自动调用 O(n) 转换（如 `tphp_fn_arr_int_to_var`）；同类型直接传递零开销：
+**协变转换**：`array<T>` 传给 `array<mixed>` 参数时自动调用 O(n) 转换；同类型直接传递零开销：
 
 ```php
 function foo(array $arr): void { }        // 参数推导为 array<mixed>
