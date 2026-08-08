@@ -384,3 +384,85 @@
 @media (max-width: 640px) {
     .links-matrix { grid-template-columns: 1fr; }
 }
+
+/* ---------- 赞助鼓励 ---------- */
+.sponsor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.sponsor-card {
+    text-align: center;
+    height: 100%;
+}
+
+.sponsor-card .body {
+    padding: 28px 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sponsor-card .sponsor-qr {
+    width: 220px;
+    height: 220px;
+    border-radius: var(--border-radius);
+    object-fit: contain;
+    margin-bottom: 16px;
+    background: var(--white);
+    border: 1px solid var(--gray-shallow);
+    cursor: zoom-in;
+    transition: transform .2s ease;
+}
+
+.sponsor-card .sponsor-qr:hover {
+    transform: scale(1.03);
+}
+
+.sponsor-card .sponsor-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--font-size-20);
+    font-weight: var(--font-weight-semibold);
+    color: var(--black);
+    margin: 0 0 6px;
+}
+
+.sponsor-card .sponsor-label .sponsor-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: var(--border-radius-full);
+}
+
+.sponsor-card .sponsor-label .sponsor-dot.wechat { background: #07c160; }
+.sponsor-card .sponsor-label .sponsor-dot.alipay { background: #1677ff; }
+
+.sponsor-card .sponsor-desc {
+    font-size: var(--font-size-sm);
+    color: var(--black-shallow);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.sponsor-intro {
+    font-size: var(--font-size-16);
+    color: var(--black-shallow);
+    line-height: 1.8;
+    margin: 0 0 24px;
+}
+
+.sponsor-foot {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--gray-shallow);
+    text-align: center;
+    font-size: var(--font-size-sm);
+    color: var(--black-shallow);
+}
+
+@media (max-width: 640px) {
+    .sponsor-grid { grid-template-columns: 1fr; }
+}
